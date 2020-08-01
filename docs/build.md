@@ -45,5 +45,5 @@ That's it!
 You can even specify which tests to execute by optionally specifying the category and test name:
 ```bash
 # ./cargstest [category] [test]
-./cargstest normalize mixed
+./cargstest option complex
 ```
