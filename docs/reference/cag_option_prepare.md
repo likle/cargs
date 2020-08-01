@@ -1,10 +1,10 @@
 ---
 title: cag_option_prepare
-description: Prepare argument options for parsing.
+description: Prepare argument options context for parsing.
 ---
 
 _(since v1.0.0)_  
-Prepare argument options for parsing.
+Prepare argument options context for parsing.
 
 ## Description
 ```c

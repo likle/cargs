@@ -63,7 +63,7 @@ void cag_option_print(const cag_option *options, size_t option_count,
   FILE *destination);
 
 /**
- * @brief Prepare argument options for parsing.
+ * @brief Prepare argument options context for parsing.
  *
  * This function prepares the context for iteration and initializes the context
  * with the supplied options and arguments. After the context has been prepared,
