@@ -4,7 +4,7 @@ project(cargsdemo)
 include(FetchContent)
 FetchContent_Declare(cargs
   GIT_REPOSITORY git@github.com:likle/cargs.git
-  GIT_TAG master
+  GIT_TAG stable
 )
 FetchContent_MakeAvailable(cargs)
 
