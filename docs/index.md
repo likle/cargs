@@ -96,10 +96,14 @@ int main(int argc, char *argv[])
 ```console
 foo@bar:~$ ./cargsdemo 
 simple_flag: 0, multiple_flag: 0, long_flag: 0, key: -
+```
 
+```console
 foo@bar:~$ ./cargsdemo -k=test -sm --long
 simple_flag: 1, multiple_flag: 1, long_flag: 1, key: test
+```
 
+```console
 foo@bar:~$ ./cargsdemo --help
 Usage: cargsdemo [OPTION]...
 Demonstrates the cargs library.
