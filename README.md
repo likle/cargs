@@ -15,7 +15,11 @@ Please have a look at the
 information. Some features this library includes:
 
  * **cross-platform** on windows, linux and macOS
- * **simple interface** - just one header 
+ * **simple interface** - just one header and once source
+ * **one simple loop** - to iterate over the arguments
+ * **automatic help output** - showing all options available 
+ * **long and short options** - giving users alternatives
+ * **option values** - for options which are more than just flags 
  
  ## Building
  **[Building](https://likle.github.io/cargs/build.html)**, 
@@ -33,12 +37,15 @@ information. Some features this library includes:
 #include <stdbool.h>
 #include <stdlib.h>
 
+/**
+ * This is the main configuration of all options available.
+ */
 static struct cag_option options[] = {
   {.identifier = 's',
-    .access_letters = "s",
-    .access_name = NULL,
-    .value_name = NULL,
-    .description = "Simple flag"},
+   .access_letters = "s",
+   .access_name = NULL,
+   .value_name = NULL,
+   .description = "Simple flag"},
 
   {.identifier = 'm',
     .access_letters = "mMoO",
@@ -63,6 +70,10 @@ static struct cag_option options[] = {
     .access_name = "help",
     .description = "Shows the command help"}};
 
+/**
+ * This is a custom project configuration structure where you can store the
+ * parsed information.
+ */
 struct demo_configuration
 {
   bool simple_flag;
@@ -78,6 +89,9 @@ int main(int argc, char *argv[])
   cag_option_context context;
   struct demo_configuration config = {false, false, false, NULL};
 
+  /**
+   * Now we just prepare the context and iterate over all options. Simple!
+   */
   cag_option_prepare(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
     identifier = cag_option_get(&context);
@@ -110,6 +124,7 @@ int main(int argc, char *argv[])
 
   return EXIT_SUCCESS;
 }
+
 ```
 
 ### Example output
