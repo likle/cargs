@@ -15,7 +15,7 @@ Please have a look at the
 information. Some features this library includes:
 
  * **cross-platform** on windows, linux and macOS
- * **simple interface** - just one header and once source
+ * **simple interface** - just one header
  * **one simple loop** - to iterate over the arguments
  * **automatic help output** - showing all options available 
  * **long and short options** - giving users alternatives
