@@ -6,12 +6,17 @@
  * which are received in the main function).
  */
 
-#ifndef CAG_OPTION_H
-#define CAG_OPTION_H
+#ifndef CAG_LIBRARY_H
+#define CAG_LIBRARY_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /**
  * An option is used to describe a flag/argument option submitted when the
@@ -130,5 +135,9 @@ const char *cag_option_get_value(const cag_option_context *context);
  * @return Returns the current index of the context.
  */
 int cag_option_get_index(const cag_option_context *context);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif
