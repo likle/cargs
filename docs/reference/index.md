@@ -4,7 +4,7 @@ description: A complete reference of the cargs command line arguments parser lib
 ---
 
 ## Basic
-
+The basic functions available in cargs, which can be used to do basic command line argument parsing.
 
 ### Functions
 * **[cag_option_fetch]({{ site.baseurl }}{% link reference/cag_option_fetch.md %})**  

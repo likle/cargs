@@ -44,6 +44,12 @@ typedef struct cag_option_context
 } cag_option_context;
 
 /**
+ * This is just a small macro which calculates the size of an array.
+ */
+#define CAG_ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+
+/**
  * @brief Prints all options to the terminal.
  *
  * This function prints all options to the terminal. This is used to generate
