@@ -52,8 +52,8 @@ typedef struct cag_option_context
 /**
  * @brief Prints all options to the terminal.
  *
- * This function prints all options to the terminal. This is used to generate
- * the output for a "--help" option.
+ * This function prints all options to the terminal. This can be used to
+ * generate the output for a "--help" option.
  *
  * @param options The options which will be printed.
  * @param option_count The option count which will be printed.
