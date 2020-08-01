@@ -2,6 +2,7 @@
 #include <cargs.h>
 #include <memory.h>
 #include <stdio.h>
+#include <string.h>
 
 static void cag_option_print_value(const cag_option *option,
   int *accessor_length, FILE *destination)
