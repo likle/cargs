@@ -9,3 +9,5 @@ builddir
 .vscode
 docs/_site
 docs/.jekyll-cache
+demo/build
+demo/build.win
