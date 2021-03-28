@@ -35,7 +35,7 @@ if(ENABLE_SANITIZER)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=${ENABLE_SANITIZER}")
 endif()
 
-# add the main executable
+# add the main library
 add_library(${LIBRARY_TARGET}
   "${INCLUDE_DIRECTORY}/cargs.h"
   "${SOURCE_DIRECTORY}/cargs.c")

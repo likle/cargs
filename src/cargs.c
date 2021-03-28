@@ -251,22 +251,42 @@ static void cag_option_parse_access_letter(cag_option_context *context,
   }
 }
 
-static void cag_option_swap(cag_option_context *context, int index_a,
-  int index_b)
+static void cag_option_shift(cag_option_context *context, int start, int option,
+  int end)
 {
   char *tmp;
+  int a_index, shift_index, shift_count, left_index, right_index;
 
-  // If this is the same index, we won't have to do anything. Actually we don't
-  // need this check, but it is still here for documentation - since the swap
-  // function must support this.
-  if (index_a == index_b) {
+  shift_count = option - start;
+
+  // There is no shift is required if the start and the option have the same
+  // index.
+  if (shift_count == 0) {
     return;
   }
 
-  // And now we swap the indexes with the help of the temporary variable.
-  tmp = context->argv[index_a];
-  context->argv[index_a] = context->argv[index_b];
-  context->argv[index_b] = tmp;
+  // Lets loop through the option strings first, which we will move towards the
+  // beginning.
+  for (a_index = option; a_index < end; ++a_index) {
+    // First remember the current option value, because we will have to save
+    // that later at the beginning.
+    tmp = context->argv[a_index];
+
+    // Let's loop over all option values and shift them one towards the end.
+    // This will override the option value we just stored temporarily.
+    for (shift_index = 0; shift_index < shift_count; ++shift_index) {
+      left_index = a_index - shift_index;
+      right_index = a_index - shift_index - 1;
+      context->argv[left_index] = context->argv[right_index];
+    }
+
+    // Now restore the saved option value at the beginning.
+    context->argv[a_index - shift_count] = tmp;
+  }
+
+  // The new index will be before all non-option values, in such a way that they
+  // all will be moved again in the next fetch call.
+  context->index = end - shift_count;
 }
 
 static bool cag_option_is_argument_string(const char *c)
@@ -274,7 +294,7 @@ static bool cag_option_is_argument_string(const char *c)
   return *c == '-' && *(c + 1) != '\0';
 }
 
-static bool cag_option_prepare_next(cag_option_context *context)
+static int cag_option_find_next(cag_option_context *context)
 {
   int next_index, next_option_index;
   char *c;
@@ -287,35 +307,30 @@ static bool cag_option_prepare_next(cag_option_context *context)
   // the end, we have to return false to indicate that we finished.
   c = context->argv[next_option_index];
   if (context->forced_end || c == NULL) {
-    return false;
+    return -1;
   }
 
   // Check whether it is a '-'. We need to find the next option - and an option
   // always starts with a '-'. If there is a string "-\0", we don't consider it
   // as an option neither.
   while (!cag_option_is_argument_string(c)) {
-    // Find next option and swap.
     c = context->argv[++next_option_index];
     if (c == NULL) {
       // We reached the end and did not find any argument anymore. Let's tell
-      // our caller that we couldn't prepare the next item.
-      return false;
+      // our caller that we reached the end.
+      return -1;
     }
   }
 
-  // We found the next item, let's swap them around and set the context index
-  // to the new index.
-  cag_option_swap(context, next_index, next_option_index);
-  context->index = next_index;
-
-  // Indicate that we found an option which can be processed. The option is
-  // now in the index of the context.
-  return true;
+  // Indicate that we found an option which can be processed. The index of the
+  // next option will be returned.
+  return next_option_index;
 }
 
 bool cag_option_fetch(cag_option_context *context)
 {
   char *c;
+  int old_index, new_index;
 
   // Reset our identifier to a question mark, which indicates an "unknown"
   // option. The value is set to NULL, to make sure we are not carrying the
@@ -323,12 +338,18 @@ bool cag_option_fetch(cag_option_context *context)
   context->identifier = '?';
   context->value = NULL;
 
-  // Check whether there are any options left to parse
-  if (!cag_option_prepare_next(context)) {
+  // Check whether there are any options left to parse and remember the old
+  // index as well as the new index. In the end we will move the option junk to
+  // the beginning, so that non option arguments can be read.
+  old_index = context->index;
+  new_index = cag_option_find_next(context);
+  if (new_index >= 0) {
+    context->index = new_index;
+  } else {
     return false;
   }
 
-  // Grab a pointer to the beginning of the option.At this point, the next
+  // Grab a pointer to the beginning of the option. At this point, the next
   // character must be a '-', since if it was not the prepare function would
   // have returned false. We will skip that symbol and proceed.
   c = context->argv[context->index];
@@ -343,22 +364,23 @@ bool cag_option_fetch(cag_option_context *context)
     // is the case, we will not move to the next index. That ensures that
     // another call to the fetch function will not skip the "--".
     if (*c == '\0') {
-      ++context->index;
+      // ++context->index;
       context->forced_end = true;
-      return false;
+    } else {
+      // We parse now the access name. All information about it will be written
+      // to the context.
+      cag_option_parse_access_name(context, &c);
     }
-
-    // We parse now the access name. All information about it will be written
-    // to the context.
-    cag_option_parse_access_name(context, &c);
-
-    // The long argument has been parsed. Indicate that to the caller, so he
-    // can process the option.
-    return true;
+  } else {
+    // This is no long option, so we can just parse an access letter.
+    cag_option_parse_access_letter(context, &c);
   }
 
-  cag_option_parse_access_letter(context, &c);
-  return true;
+  // Move the items so that the options come first followed by non-option
+  // arguments.
+  cag_option_shift(context, old_index, new_index, context->index);
+
+  return context->forced_end == false;
 }
 
 char cag_option_get(const cag_option_context *context)

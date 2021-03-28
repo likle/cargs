@@ -68,7 +68,7 @@ static int make_args(const char *str)
     }
   } while (*(c++));
 
-  argv = malloc(sizeof(char *) * argc + 1);
+  argv = malloc(sizeof(char *) * (argc + 1));
   if (argv == NULL) {
     return 1;
   }
@@ -190,9 +190,9 @@ err_setup:
 
 int option_mixed(void)
 {
-  int status, i, j;
+  int status, i;
 
-  const char *values[] = {"file1", "mixed", "file3", "file2", "-m",
+  const char *values[] = {"file1", "file2", "mixed", "file3", "--", "-m",
     "parameters", "file4"};
 
   status = make_args(
@@ -202,29 +202,14 @@ int option_mixed(void)
   }
 
   status = option_test_run(argc, argv);
-  if (status < 0 || argc - status != 7) {
+  if (status < 0 || argc - status != 8) {
     goto err_wrong;
   }
 
-  /* The following should come after the index:
-   * --
-   * file1
-   * mixed
-   * file3
-   * file2
-   * -m
-   * parameters
-   * file4
-   */
   for (i = 0; i < (int)CAG_ARRAY_SIZE(values); ++i) {
-    for (j = status; j < argc; ++j) {
-      if (strcmp(argv[j], values[i]) == 0) {
-        goto found;
-      }
+    if (strcmp(argv[status + i], values[i]) != 0) {
+      goto err_wrong;
     }
-
-    goto err_wrong;
-  found:;
   }
 
   if (!result.simple || !result.another || result.multi_access ||

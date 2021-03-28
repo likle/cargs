@@ -8,6 +8,7 @@ FetchContent_Declare(cargs
 )
 FetchContent_MakeAvailable(cargs)
 
+target_include_directories(cargs PUBLIC ../include/)
 add_executable(cargsdemo main.c)
 
 target_link_libraries(cargsdemo cargs)
