@@ -364,7 +364,6 @@ bool cag_option_fetch(cag_option_context *context)
     // is the case, we will not move to the next index. That ensures that
     // another call to the fetch function will not skip the "--".
     if (*c == '\0') {
-      // ++context->index;
       context->forced_end = true;
     } else {
       // We parse now the access name. All information about it will be written
