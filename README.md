@@ -1,4 +1,4 @@
-<img style="width:100%;" src="/banner.png">
+<img style="width:100%;" src="banner.png">
 
 [![Travis Build](https://img.shields.io/travis/likle/cargs/master.svg?label=Linux%20%26%20MacOS)](https://travis-ci.org/likle/cargs)
 [![Appveyor Build](https://img.shields.io/appveyor/ci/likle/cargs/master.svg?label=Windows)](https://ci.appveyor.com/project/likle/cargs) 
