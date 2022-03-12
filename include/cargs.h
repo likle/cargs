@@ -13,9 +13,29 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#if defined(_WIN32) || defined(__CYGWIN__)
+#define CAG_EXPORT __declspec(dllexport)
+#define CAG_IMPORT __declspec(dllimport)
+#elif __GNUC__ >= 4
+#define CAG_EXPORT __attribute__((visibility("default")))
+#define CAG_IMPORT __attribute__((visibility("default")))
+#else
+#define CAG_EXPORT
+#define CAG_IMPORT
+#endif
+
+#if defined(CAG_SHARED)
+#if defined(CAG_EXPORTS)
+#define CAG_PUBLIC CAG_EXPORT
+#else
+#define CAG_PUBLIC CAG_IMPORT
+#endif
+#else
+#define CAG_PUBLIC
+#endif
+
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /**
@@ -53,7 +73,6 @@ typedef struct cag_option_context
  */
 #define CAG_ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
-
 /**
  * @brief Prints all options to the terminal.
  *
@@ -64,7 +83,7 @@ typedef struct cag_option_context
  * @param option_count The option count which will be printed.
  * @param destination The destination where the output will be printed.
  */
-void cag_option_print(const cag_option *options, size_t option_count,
+CAG_PUBLIC void cag_option_print(const cag_option *options, size_t option_count,
   FILE *destination);
 
 /**
@@ -81,8 +100,8 @@ void cag_option_print(const cag_option *options, size_t option_count,
  * @param argc The amount of arguments the user supplied in the main function.
  * @param argv A pointer to the arguments of the main function.
  */
-void cag_option_prepare(cag_option_context *context, const cag_option *options,
-  size_t option_count, int argc, char **argv);
+CAG_PUBLIC void cag_option_prepare(cag_option_context *context,
+  const cag_option *options, size_t option_count, int argc, char **argv);
 
 /**
  * @brief Fetches an option from the argument list.
@@ -99,7 +118,7 @@ void cag_option_prepare(cag_option_context *context, const cag_option *options,
  * @return Returns true if there was another option or false if the end is
  * reached.
  */
-bool cag_option_fetch(cag_option_context *context);
+CAG_PUBLIC bool cag_option_fetch(cag_option_context *context);
 
 /**
  * @brief Gets the identifier of the option.
@@ -110,7 +129,7 @@ bool cag_option_fetch(cag_option_context *context);
  * @param context The context from which the option was fetched.
  * @return Returns the identifier of the option.
  */
-char cag_option_get(const cag_option_context *context);
+CAG_PUBLIC char cag_option_get(const cag_option_context *context);
 
 /**
  * @brief Gets the value from the option.
@@ -121,7 +140,7 @@ char cag_option_get(const cag_option_context *context);
  * @param context The context from which the option was fetched.
  * @return Returns a pointer to the value or NULL if there is no value.
  */
-const char *cag_option_get_value(const cag_option_context *context);
+CAG_PUBLIC const char *cag_option_get_value(const cag_option_context *context);
 
 /**
  * @brief Gets the current index of the context.
@@ -134,7 +153,7 @@ const char *cag_option_get_value(const cag_option_context *context);
  * @param context The context from which the option was fetched.
  * @return Returns the current index of the context.
  */
-int cag_option_get_index(const cag_option_context *context);
+CAG_PUBLIC int cag_option_get_index(const cag_option_context *context);
 
 #ifdef __cplusplus
 } // extern "C"

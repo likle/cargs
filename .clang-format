@@ -1,29 +1,38 @@
 ---
 BasedOnStyle: LLVM
 AlignAfterOpenBracket: DontAlign
-BinPackArguments: 'true'
-BinPackParameters: 'true'
-BreakBeforeBraces: Mozilla
-IndentWidth: '2'
-ContinuationIndentWidth: '2'
-AllowAllParametersOfDeclarationOnNextLine: 'false'
-AllowShortBlocksOnASingleLine: 'false'
-AllowShortCaseLabelsOnASingleLine: 'false'
-AllowShortFunctionsOnASingleLine: 'false'
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBraces: Custom
+IndentWidth: 2
+ContinuationIndentWidth: 2
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AllowShortBlocksOnASingleLine: 'Never'
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: 'None'
 AllowShortIfStatementsOnASingleLine: 'false'
-AllowShortLoopsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: false
 PenaltyBreakAssignment: 10000
 PenaltyBreakBeforeFirstCallParameter: 100000
-
-BreakBeforeBraces: Custom
+IndentExternBlock: false
 BraceWrapping:
-  AfterControlStatement: false
+  AfterExternBlock: false
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Never
   AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterObjCDeclaration: false
   AfterStruct: true
   AfterUnion: true
   AfterExternBlock: true
-  AfterFunction: true
-  IndentBraces: false
+  BeforeCatch: false
   BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
+  IndentBraces: false
   SplitEmptyFunction: true
-  SplitEmptyRecord: true
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: true
