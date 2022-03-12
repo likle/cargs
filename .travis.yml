@@ -3,8 +3,9 @@ language: c
 os:
 - linux
 - osx
+- freebsd
 
-dist: bionic
+dist: focal
 
 addons:
   apt:
