@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9.2)
 
 # set project name
 project(cargs
-  VERSION 1.0.1
+  VERSION 1.0.2
   DESCRIPTION "A simple argument parser library"
   LANGUAGES C)
 
