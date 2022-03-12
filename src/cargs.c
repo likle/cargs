@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#define CAG_OPTION_PRINT_DISTANCE 4
+#define CAG_OPTION_PRINT_MIN_INDENTION 20
+
 static void cag_option_print_value(const cag_option *option,
-  int *accessor_length, FILE *destination)
+  size_t *accessor_length, FILE *destination)
 {
   if (option->value_name != NULL) {
     *accessor_length += fprintf(destination, "=%s", option->value_name);
@@ -13,7 +16,7 @@ static void cag_option_print_value(const cag_option *option,
 }
 
 static void cag_option_print_letters(const cag_option *option, bool *first,
-  int *accessor_length, FILE *destination)
+  size_t *accessor_length, FILE *destination)
 {
   const char *access_letter;
   access_letter = option->access_letters;
@@ -31,7 +34,7 @@ static void cag_option_print_letters(const cag_option *option, bool *first,
 }
 
 static void cag_option_print_name(const cag_option *option, bool *first,
-  int *accessor_length, FILE *destination)
+  size_t *accessor_length, FILE *destination)
 {
   if (option->access_name != NULL) {
     if (*first) {
@@ -42,13 +45,46 @@ static void cag_option_print_name(const cag_option *option, bool *first,
   }
 }
 
+static size_t cag_option_get_print_indention(const cag_option *options,
+  size_t option_count)
+{
+  size_t option_index, indention, result;
+  const cag_option *option;
+
+  result = CAG_OPTION_PRINT_MIN_INDENTION;
+
+  for (option_index = 0; option_index < option_count; ++option_index) {
+    indention = CAG_OPTION_PRINT_DISTANCE;
+    option = &options[option_index];
+    if (option->access_letters != NULL && *option->access_letters) {
+      indention += strlen(option->access_letters) * 4 - 2;
+      if (option->access_name != NULL) {
+        indention += strlen(option->access_name) + 4;
+      }
+    } else if (option->access_name != NULL) {
+      indention += strlen(option->access_name) + 2;
+    }
+
+    if (option->value_name != NULL) {
+      indention += strlen(option->value_name) + 1;
+    }
+
+    if (indention > result) {
+      result = indention;
+    }
+  }
+
+  return result;
+}
+
 void cag_option_print(const cag_option *options, size_t option_count,
   FILE *destination)
 {
-  size_t option_index;
+  size_t option_index, indention, i, accessor_length;
   const cag_option *option;
   bool first;
-  int i, accessor_length;
+
+  indention = cag_option_get_print_indention(options, option_count);
 
   for (option_index = 0; option_index < option_count; ++option_index) {
     option = &options[option_index];
@@ -61,7 +97,7 @@ void cag_option_print(const cag_option *options, size_t option_count,
     cag_option_print_name(option, &first, &accessor_length, destination);
     cag_option_print_value(option, &accessor_length, destination);
 
-    for (i = accessor_length; i < 20; ++i) {
+    for (i = accessor_length; i < indention; ++i) {
       fputs(" ", destination);
     }
 

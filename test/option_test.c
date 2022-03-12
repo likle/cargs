@@ -627,18 +627,15 @@ int option_print(void)
 {
   char buf[255];
   const char *expected;
-  const char *test_file_name;
   FILE *test_file;
 
-  test_file_name = "option_print.out";
   expected = "  -s                   Simple flag\n"
              "  -a                   Another simple flag\n"
              "  -m, -M, -o, -O       Multiple access letters\n"
              "  --long               Long parameter name\n"
              "  -k, --key=VALUE      Parameter value\n";
 
-  remove(test_file_name);
-  test_file = fopen(test_file_name, "w+");
+  test_file = tmpfile();
   if (test_file == NULL) {
     goto err_open;
   }
@@ -656,14 +653,12 @@ int option_print(void)
     goto err_test;
   }
 
-  remove(test_file_name);
   fclose(test_file);
   return EXIT_SUCCESS;
 
 err_test:
 err_read:
 err_seek:
-  remove(test_file_name);
   fclose(test_file);
 err_open:
   return EXIT_FAILURE;
