@@ -50,6 +50,11 @@ target_include_directories(${LIBRARY_TARGET} PUBLIC
 set_target_properties(cargs PROPERTIES PUBLIC_HEADER "${INCLUDE_DIRECTORY}/cargs.h")
 set_target_properties(cargs PROPERTIES DEFINE_SYMBOL CAG_EXPORTS)
 
+# add shared library macro
+if(BUILD_SHARED_LIBS)
+  target_compile_definitions(cargs PUBLIC CAG_SHARED)
+endif()
+
 # add tests
 if(ENABLE_TESTS)
   message("-- Tests enabled")
