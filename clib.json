@@ -1,0 +1,10 @@
+{
+  "name": "cargs",
+  "version": "v1.0.3",
+  "repo": "likle/cargs",
+  "description": "command line argument library for C/C++",
+  "src": [
+    "src/cargs.c",
+    "include/cargs.h"
+  ]
+}
