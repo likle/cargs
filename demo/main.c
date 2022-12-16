@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
   const char *value;
   cag_option_context context;
   struct demo_configuration config = {false, false, false, NULL};
+  int param_index;
 
   /**
    * Now we just prepare the context and iterate over all options. Simple!
@@ -86,6 +87,10 @@ int main(int argc, char *argv[])
   printf("simple_flag: %i, multiple_flag: %i, long_flag: %i, key: %s\n",
     config.simple_flag, config.multiple_flag, config.long_flag,
     config.key ? config.key : "-");
+  
+  for (param_index = context.index; param_index < argc; ++param_index) {
+    printf("additional parameter: %s\n", argv[param_index]);
+  }
 
   return EXIT_SUCCESS;
 }
