@@ -156,3 +156,12 @@ Demonstrates the cargs library.
 
 Note that all formatting is done by cargs.
 ```
+
+```console
+foo@bar:~$ ./cargsdemo also -k=test some -sm additional --long parameters
+simple_flag: 1, multiple_flag: 1, long_flag: 1, key: test
+additinal parameter: also
+additinal parameter: some
+additinal parameter: additional
+additinal parameter: parameters
+```
