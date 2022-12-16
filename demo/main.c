@@ -92,5 +92,10 @@ int main(int argc, char *argv[])
     printf("additional parameter: %s\n", argv[param_index]);
   }
 
+  int non_option_parameter_count = argc - context.index;
+      const char *first_non_option_parameter = argv[context.index];
+        const char *second_non_option_parameter = argv[context.index + 1];
+        printf("%i %s %s\n", non_option_parameter_count, first_non_option_parameter, second_non_option_parameter);
+
   return EXIT_SUCCESS;
 }

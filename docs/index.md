@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
   const char *value;
   cag_option_context context;
   struct demo_configuration config = {false, false, false, NULL};
+  int param_index;
 
   /**
    * Now we just prepare the context and iterate over all options. Simple!
@@ -98,6 +99,10 @@ int main(int argc, char *argv[])
     config.simple_flag, config.multiple_flag, config.long_flag,
     config.key ? config.key : "-");
 
+  for (param_index = context.index; param_index < argc; ++param_index) {
+    printf("additional parameter: %s\n", argv[param_index]);
+  }
+
   return EXIT_SUCCESS;
 }
 
@@ -127,3 +132,12 @@ Demonstrates the cargs library.
 
 Note that all formatting is done by cargs.
 ```  
+<br>
+```console
+foo@bar:~$ ./cargsdemo also -k=test some -sm additional --long parameters
+simple_flag: 1, multiple_flag: 1, long_flag: 1, key: test
+additinal parameter: also
+additinal parameter: some
+additinal parameter: additional
+additinal parameter: parameters
+```
