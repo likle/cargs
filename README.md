@@ -3,7 +3,6 @@
 [![Travis Build](https://img.shields.io/travis/com/likle/cargs/master?label=Linux%2C%20macOS%20%26%20FreeBSD)](https://app.travis-ci.com/github/likle/cargs)
 [![Appveyor Build](https://img.shields.io/appveyor/ci/likle/cargs/master.svg?label=Windows)](https://ci.appveyor.com/project/likle/cargs) 
 [![codecov](https://img.shields.io/codecov/c/github/likle/cargs/master.svg?label=Coverage)](https://codecov.io/gh/likle/cargs)
-[![Language Grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/likle/cargs.svg?label=Code%20Quality)](https://lgtm.com/projects/g/likle/cargs/context:cpp)
 
 # libcargs - command line argument library for C/C++
 This is a lighweight C command line argument library. It is currently compiled and 
