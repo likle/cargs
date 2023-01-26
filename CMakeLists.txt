@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.14.7)
 project(cargs
   VERSION 1.0.3
   DESCRIPTION "A simple argument parser library"
+  HOMEPAGE_URL "https://likle.github.io/cargs/"
   LANGUAGES C)
 
 # include utilities
@@ -93,9 +94,16 @@ write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/CargsConfigVersion.cmake
   COMPATIBILITY SameMajorVersion)
 
+# pkg-config
+configure_file(cargs.pc.in ${PROJECT_BINARY_DIR}/cargs.pc @ONLY)
+
 # installing
 install(TARGETS cargs
   EXPORT CargsTargets)
+
+install(FILES
+  ${PROJECT_BINARY_DIR}/cargs.pc
+  DESTINATION lib/pkgconfig/)
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CargsConfig.cmake
