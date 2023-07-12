@@ -440,5 +440,5 @@ int cag_option_get_index(const cag_option_context *context)
 
 const char *cag_option_get_invalid(const cag_option_context *context)
 {
-  return context->argv[context->failed_index];
+  return context->argv[context->failed_index-1];
 }

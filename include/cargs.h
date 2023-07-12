@@ -156,6 +156,8 @@ CAG_PUBLIC const char *cag_option_get_value(const cag_option_context *context);
  */
 CAG_PUBLIC int cag_option_get_index(const cag_option_context *context);
 
+CAG_PUBLIC const char *cag_option_get_invalid(const cag_option_context *context);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
