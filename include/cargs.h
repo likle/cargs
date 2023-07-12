@@ -63,6 +63,7 @@ typedef struct cag_option_context
   char **argv;
   int index;
   int inner_index;
+  int failed_index;
   bool forced_end;
   char identifier;
   char *value;
