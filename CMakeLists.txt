@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.14.7)
 project(cargs
   VERSION 1.0.3
   DESCRIPTION "A simple argument parser library"
-  HOMEPAGE_URL "https://likle.github.io/cargs/"
   LANGUAGES C)
 
 # include utilities
@@ -20,10 +19,14 @@ set(CMAKE_C_STANDARD 11)
 
 # setup target and directory names
 set(LIBRARY_TARGET "cargs")
-set(TEST_TARGET "cargstest")
 set(INCLUDE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+set(TEST_TARGET "cargstest")
 set(TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test")
+
+set(DEMO_TARGET "cargsdemo")
+set(DEMO_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/demo")
 
 # enable coverage if requested
 if(ENABLE_COVERAGE)
@@ -86,6 +89,12 @@ if(ENABLE_TESTS)
   enable_warnings(${TEST_TARGET})
 endif()
 
+if(ENABLE_DEMO)
+  message("-- Demo enabled")
+  add_executable(${DEMO_TARGET} "${DEMO_DIRECTORY}/main.c")
+  target_link_libraries(${DEMO_TARGET} PUBLIC ${LIBRARY_TARGET})
+endif()
+
 # version file
 configure_package_config_file("cmake/CargsConfig.cmake.in"
   ${CMAKE_CURRENT_BINARY_DIR}/CargsConfig.cmake
@@ -94,16 +103,9 @@ write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/CargsConfigVersion.cmake
   COMPATIBILITY SameMajorVersion)
 
-# pkg-config
-configure_file(cargs.pc.in ${PROJECT_BINARY_DIR}/cargs.pc @ONLY)
-
 # installing
 install(TARGETS cargs
   EXPORT CargsTargets)
-
-install(FILES
-  ${PROJECT_BINARY_DIR}/cargs.pc
-  DESTINATION lib/pkgconfig/)
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CargsConfig.cmake
