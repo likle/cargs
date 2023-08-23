@@ -233,6 +233,7 @@ static void cag_option_parse_access_name(cag_option_context *context, char **c)
   // it will remain '?' within the context.
   option = cag_option_find_by_name(context, n, (size_t)(*c - n));
   if (option == NULL) {
+    context->failed_index = context->index;
     // Since this option is invalid, we will move on to the next index. There is
     // nothing we can do about this.
     ++context->index;
@@ -266,6 +267,7 @@ static void cag_option_parse_access_letter(cag_option_context *context,
   // specifically, it will remain '?' within the context.
   option = cag_option_find_by_letter(context, n[context->inner_index]);
   if (option == NULL) {
+    context->failed_index = context->index;
     ++context->index;
     context->inner_index = 0;
     return;
@@ -434,4 +436,9 @@ int cag_option_get_index(const cag_option_context *context)
 {
   // Either we point to a value item,
   return context->index;
+}
+
+const char *cag_option_get_invalid(const cag_option_context *context)
+{
+  return context->argv[context->failed_index-1];
 }

@@ -63,6 +63,7 @@ typedef struct cag_option_context
   char **argv;
   int index;
   int inner_index;
+  int failed_index;
   bool forced_end;
   char identifier;
   char *value;
@@ -154,6 +155,18 @@ CAG_PUBLIC const char *cag_option_get_value(const cag_option_context *context);
  * @return Returns the current index of the context.
  */
 CAG_PUBLIC int cag_option_get_index(const cag_option_context *context);
+
+/**
+ * @brief Gets an invalid option if found
+ *
+ * This function gets an invalid option if an option doesn't match one of options
+ * from `cag_option` list. This is useful if you want more detailed error
+ * about an invalid option found.
+ *
+ * @param context The context from which the option was fetched.
+ * @return Returns a string where it contains the invalid option.
+ */
+CAG_PUBLIC const char *cag_option_get_invalid(const cag_option_context *context);
 
 #ifdef __cplusplus
 } // extern "C"
