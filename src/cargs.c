@@ -334,13 +334,13 @@ static bool cag_option_is_argument_string(const char *c)
 
 static int cag_option_find_next(cag_option_context *context)
 {
-  int next_index, next_option_index;
+  // Prepare to search the next option at the next index.
+  int next_option_index = context->index;
   char *c;
 
-  // Prepare to search the next option at the next index.
-  next_index = context->index;
-  next_option_index = next_index;
-
+  if(next_option_index >= context->argc) {
+    return -1;
+  }
   // Grab a pointer to the string and verify that it is not the end. If it is
   // the end, we have to return false to indicate that we finished.
   c = context->argv[next_option_index];
@@ -352,7 +352,10 @@ static int cag_option_find_next(cag_option_context *context)
   // always starts with a '-'. If there is a string "-\0", we don't consider it
   // as an option neither.
   while (!cag_option_is_argument_string(c)) {
-    c = context->argv[++next_option_index];
+    if(++next_option_index >= context->argc) {
+      return -1;
+    }
+    c = context->argv[next_option_index];
     if (c == NULL) {
       // We reached the end and did not find any argument anymore. Let's tell
       // our caller that we reached the end.
