@@ -81,6 +81,8 @@ if(ENABLE_TESTS)
   create_test(DEFAULT option boundaries)
   create_test(DEFAULT option boundaries_mix)
   create_test(DEFAULT option print)
+  create_test(DEFAULT option error_print_short)
+  create_test(DEFAULT option error_print_long)
   create_test_list(DEFAULT "${TEST_DIRECTORY}/tests.h")
 
   add_executable(${TEST_TARGET}

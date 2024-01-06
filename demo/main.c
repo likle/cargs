@@ -58,9 +58,9 @@ int main(int argc, char *argv[])
   /**
    * Now we just prepare the context and iterate over all options. Simple!
    */
-  cag_option_prepare(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
+  cag_option_init(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get(&context);
+    identifier = cag_option_get_identifier(&context);
     switch (identifier) {
     case 's':
       config.simple_flag = true;
@@ -81,21 +81,26 @@ int main(int argc, char *argv[])
       cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
       printf("\nNote that all formatting is done by cargs.\n");
       return EXIT_SUCCESS;
+    case '?':
+      cag_option_print_error(&context, stdout);
+      break;
     }
   }
 
   printf("simple_flag: %i, multiple_flag: %i, long_flag: %i, key: %s\n",
     config.simple_flag, config.multiple_flag, config.long_flag,
     config.key ? config.key : "-");
-  
+
   for (param_index = context.index; param_index < argc; ++param_index) {
     printf("additional parameter: %s\n", argv[param_index]);
   }
 
-  int non_option_parameter_count = argc - context.index;
-      const char *first_non_option_parameter = argv[context.index];
-        const char *second_non_option_parameter = argv[context.index + 1];
-        printf("%i %s %s\n", non_option_parameter_count, first_non_option_parameter, second_non_option_parameter);
+  int index = cag_option_get_index(&context);
+  int non_option_parameter_count = argc - index;
+  const char *first_non_option_parameter = argv[index];
+  const char *second_non_option_parameter = argv[index + 1];
+  printf("%i %s %s\n", non_option_parameter_count, first_non_option_parameter,
+    second_non_option_parameter);
 
   return EXIT_SUCCESS;
 }

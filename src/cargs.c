@@ -77,38 +77,7 @@ static size_t cag_option_get_print_indention(const cag_option *options,
   return result;
 }
 
-void cag_option_print(const cag_option *options, size_t option_count,
-  FILE *destination)
-{
-  size_t option_index, indention, i, accessor_length;
-  const cag_option *option;
-  bool first;
-
-  indention = cag_option_get_print_indention(options, option_count);
-
-  for (option_index = 0; option_index < option_count; ++option_index) {
-    option = &options[option_index];
-    accessor_length = 0;
-    first = true;
-
-    fputs("  ", destination);
-
-    cag_option_print_letters(option, &first, &accessor_length, destination);
-    cag_option_print_name(option, &first, &accessor_length, destination);
-    cag_option_print_value(option, &accessor_length, destination);
-
-    for (i = accessor_length; i < indention; ++i) {
-      fputs(" ", destination);
-    }
-
-    fputs(" ", destination);
-    fputs(option->description, destination);
-
-    fprintf(destination, "\n");
-  }
-}
-
-void cag_option_prepare(cag_option_context *context, const cag_option *options,
+void cag_option_init(cag_option_context *context, const cag_option *options,
   size_t option_count, int argc, char **argv)
 {
   // This just initialized the values to the beginning of all the arguments.
@@ -119,6 +88,8 @@ void cag_option_prepare(cag_option_context *context, const cag_option *options,
   context->index = 1;
   context->inner_index = 0;
   context->forced_end = false;
+  context->error_index = -1;
+  context->error_letter = 0;
 }
 
 static const cag_option *cag_option_find_by_name(cag_option_context *context,
@@ -232,21 +203,18 @@ static void cag_option_parse_access_name(cag_option_context *context, char **c)
   // this option has one or not. Since we don't set any identifier specifically,
   // it will remain '?' within the context.
   option = cag_option_find_by_name(context, n, (size_t)(*c - n));
-  if (option == NULL) {
-    context->failed_index = context->index;
-    // Since this option is invalid, we will move on to the next index. There is
-    // nothing we can do about this.
-    ++context->index;
-    return;
+  if (option != NULL) {
+    // We found an option and now we can specify the identifier within the
+    // context.
+    context->identifier = option->identifier;
+
+    // And now we try to parse the value. This function will also check whether
+    // this option is actually supposed to have a value.
+    cag_option_parse_value(context, option, c);
+  } else {
+    // Remember the error index so that we can print a error message.
+    context->error_index = context->index;
   }
-
-  // We found an option and now we can specify the identifier within the
-  // context.
-  context->identifier = option->identifier;
-
-  // And now we try to parse the value. This function will also check whether
-  // this option is actually supposed to have a value.
-  cag_option_parse_value(context, option, c);
 
   // And finally we move on to the next index.
   ++context->index;
@@ -256,8 +224,9 @@ static void cag_option_parse_access_letter(cag_option_context *context,
   char **c)
 {
   const cag_option *option;
-  char *n = *c;
-  char *v;
+  char *n, *v, letter;
+
+  n = *c;
 
   // Figure out which option this letter belongs to. This might return NULL if
   // the letter is not registered, which means the user supplied an unknown
@@ -265,9 +234,11 @@ static void cag_option_parse_access_letter(cag_option_context *context,
   // option. We have to skip the value parsing since we don't know whether the
   // user thinks this option has one or not. Since we don't set any identifier
   // specifically, it will remain '?' within the context.
-  option = cag_option_find_by_letter(context, n[context->inner_index]);
+  letter = n[context->inner_index];
+  option = cag_option_find_by_letter(context, letter);
   if (option == NULL) {
-    context->failed_index = context->index;
+    context->error_index = context->index;
+    context->error_letter = letter;
     ++context->index;
     context->inner_index = 0;
     return;
@@ -383,6 +354,8 @@ bool cag_option_fetch(cag_option_context *context)
   // parameter from the previous option to this one.
   context->identifier = '?';
   context->value = NULL;
+  context->error_index = -1;
+  context->error_letter = 0;
 
   // Check whether there are any options left to parse and remember the old
   // index as well as the new index. In the end we will move the option junk to
@@ -428,7 +401,7 @@ bool cag_option_fetch(cag_option_context *context)
   return context->forced_end == false;
 }
 
-char cag_option_get(const cag_option_context *context)
+char cag_option_get_identifier(const cag_option_context *context)
 {
   // We just return the identifier here.
   return context->identifier;
@@ -446,7 +419,75 @@ int cag_option_get_index(const cag_option_context *context)
   return context->index;
 }
 
-const char *cag_option_get_invalid(const cag_option_context *context)
+CAG_PUBLIC int cag_option_get_error_index(const cag_option_context *context)
 {
-  return context->argv[context->failed_index - 1];
+  // This is set
+  return context->error_index;
+}
+
+CAG_PUBLIC char cag_option_get_error_letter(const cag_option_context *context)
+{
+  // This is set to the unknown option letter if it was parsed.
+  return context->error_letter;
+}
+
+CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
+  FILE *destination)
+{
+  int error_index;
+  char error_letter;
+
+  error_index = cag_option_get_error_index(context);
+  if(error_index < 0) {
+    return;
+  }
+
+  error_letter = cag_option_get_error_letter(context);
+  if(error_letter) {
+    fprintf(destination, "Unknown option '%c' in '%s'.\n", error_letter, context->argv[error_index]);
+  } else {
+    fprintf(destination, "Unknown option '%s'.\n", context->argv[error_index]);
+  }
+}
+
+void cag_option_print(const cag_option *options, size_t option_count,
+  FILE *destination)
+{
+  size_t option_index, indention, i, accessor_length;
+  const cag_option *option;
+  bool first;
+
+  indention = cag_option_get_print_indention(options, option_count);
+
+  for (option_index = 0; option_index < option_count; ++option_index) {
+    option = &options[option_index];
+    accessor_length = 0;
+    first = true;
+
+    fputs("  ", destination);
+
+    cag_option_print_letters(option, &first, &accessor_length, destination);
+    cag_option_print_name(option, &first, &accessor_length, destination);
+    cag_option_print_value(option, &accessor_length, destination);
+
+    for (i = accessor_length; i < indention; ++i) {
+      fputs(" ", destination);
+    }
+
+    fputs(" ", destination);
+    fputs(option->description, destination);
+
+    fprintf(destination, "\n");
+  }
+}
+
+void cag_option_prepare(cag_option_context *context, const cag_option *options,
+  size_t option_count, int argc, char **argv)
+{
+  cag_option_init(context, options, option_count, argc, argv);
+}
+
+char cag_option_get(const cag_option_context *context)
+{
+  return cag_option_get_identifier(context);
 }

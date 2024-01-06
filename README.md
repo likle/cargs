@@ -1,36 +1,42 @@
 <img style="width:100%;" src="banner.png">
 
 [![Travis Build](https://img.shields.io/travis/com/likle/cargs/master?label=Linux%2C%20macOS%20%26%20FreeBSD)](https://app.travis-ci.com/github/likle/cargs)
-[![Appveyor Build](https://img.shields.io/appveyor/ci/likle/cargs/master.svg?label=Windows)](https://ci.appveyor.com/project/likle/cargs) 
+[![Appveyor Build](https://img.shields.io/appveyor/ci/likle/cargs/master.svg?label=Windows)](https://ci.appveyor.com/project/likle/cargs)
 [![codecov](https://img.shields.io/codecov/c/github/likle/cargs/master.svg?label=Coverage)](https://codecov.io/gh/likle/cargs)
 
 # libcargs - command line argument library for C/C++
-This is a lighweight C command line argument library. It is currently compiled and 
-tested under **Windows**, **MacOS** and **Linux**. 
+
+This is a lighweight C command line argument library which does not require any memory allocation. It is currently
+compiled and tested under **Windows**, **MacOS** and **Linux**.
 
 ## Features
-Please have a look at the 
-**[reference](https://likle.github.io/cargs/reference/)** for detailed 
+
+Please have a look at the
+**[reference](https://likle.github.io/cargs/reference/)** for detailed
 information. Some features this library includes:
 
- * **cross-platform** on windows, linux and macOS
- * **simple interface** - just one header
- * **one simple loop** - to iterate over the arguments
- * **automatic help output** - showing all options available 
- * **long and short options** - giving users alternatives
- * **option values** - for options which are more than just flags 
- 
- ## Building
- **[Building](https://likle.github.io/cargs/build.html)**, 
- **[embedding](https://likle.github.io/cargs/embed.html)** and 
- **[testing](https://likle.github.io/cargs/build.html)** instructions are 
- available in the documentation (it's very easy).
- 
- ## Docs
- All the documentation is available in the 
- **[the github page](https://likle.github.io/cargs/)** of this repository.
- 
- ## Example
+* **cross-platform** on windows, linux and macOS
+* **simple interface** - just one header
+* **one simple loop** - to iterate over the arguments
+* **automatic help output** - showing all options available
+* **long and short options** - giving users alternatives
+* **option values** - for options which are more than just flags
+* **no malloc needed** - for situations where that's not available
+
+## Building
+
+**[Building](https://likle.github.io/cargs/build.html)**,
+**[embedding](https://likle.github.io/cargs/embed.html)** and
+**[testing](https://likle.github.io/cargs/build.html)** instructions are
+available in the documentation (it's very easy).
+
+## Docs
+
+All the documentation is available in the
+**[the github page](https://likle.github.io/cargs/)** of this repository.
+
+## Example
+
  ```c
 #include <cargs.h>
 #include <stdbool.h>
@@ -132,6 +138,7 @@ int main(int argc, char *argv[])
 ```
 
 ### Example output
+
 ```console
 foo@bar:~$ ./cargsdemo 
 simple_flag: 0, multiple_flag: 0, long_flag: 0, key: -

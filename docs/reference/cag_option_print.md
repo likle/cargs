@@ -20,9 +20,11 @@ the output for a "--help" option.
  * **option_count**: The option count which will be printed.
  * **destination**: The destination where the output will be printed.
 
-
 ## Changelog
 
-| Version    | Description                                            |
-|------------|--------------------------------------------------------|
-| **v1.0.0** | The function is introduced.                            |
+| Version    | Description                                   |
+|------------|-----------------------------------------------|
+| **v1.0.3** | Added shared library exports.                 |
+| **v1.0.2** | Fixed option indention for long descriptions. |
+| **v1.0.1** | Added support for C++ projects.               |
+| **v1.0.0** | The function is introduced.                   |
