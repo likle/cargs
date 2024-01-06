@@ -48,7 +48,7 @@
  */
 #if (!__cplusplus && __STDC_VERSION__ >= 202311L) || (__cplusplus >= 201402L)
 #define CAG_DEPRECATED(comment) [[deprecated(comment)]]
-#elif defined(__GNUC__) || defined(__clang__)
+#else
 #define CAG_DEPRECATED(comment)
 #endif
 
