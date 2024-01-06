@@ -623,6 +623,69 @@ err_setup:
   return EXIT_FAILURE;
 }
 
+int option_boundaries(void)
+{
+  int status;
+
+  status = make_args("test -s -a");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  // Remove the "-a".
+  argc = 2;
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (!result.simple || result.another) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_boundaries_mix(void)
+{
+  int status;
+
+  status = make_args("test foobar -s -a");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  // Remove the "-s" and "-a".
+  argc = 2;
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+
 int option_print(void)
 {
   char buf[255];

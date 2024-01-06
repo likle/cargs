@@ -335,15 +335,19 @@ static bool cag_option_is_argument_string(const char *c)
 static int cag_option_find_next(cag_option_context *context)
 {
   // Prepare to search the next option at the next index.
-  int next_option_index = context->index;
+  int next_index;
   char *c;
 
-  if(next_option_index >= context->argc) {
+  next_index = context->index;
+
+  // Let's verify that it is not the end If it is
+  // the end we have to return -1 to indicate that we finished.
+  if (next_index >= context->argc) {
     return -1;
   }
-  // Grab a pointer to the string and verify that it is not the end. If it is
-  // the end, we have to return false to indicate that we finished.
-  c = context->argv[next_option_index];
+
+  // Grab a pointer to the argument string.
+  c = context->argv[next_index];
   if (context->forced_end || c == NULL) {
     return -1;
   }
@@ -352,20 +356,21 @@ static int cag_option_find_next(cag_option_context *context)
   // always starts with a '-'. If there is a string "-\0", we don't consider it
   // as an option neither.
   while (!cag_option_is_argument_string(c)) {
-    if(++next_option_index >= context->argc) {
-      return -1;
-    }
-    c = context->argv[next_option_index];
-    if (c == NULL) {
+    if (++next_index >= context->argc) {
       // We reached the end and did not find any argument anymore. Let's tell
       // our caller that we reached the end.
+      return -1;
+    }
+
+    c = context->argv[next_index];
+    if (c == NULL) {
       return -1;
     }
   }
 
   // Indicate that we found an option which can be processed. The index of the
   // next option will be returned.
-  return next_option_index;
+  return next_index;
 }
 
 bool cag_option_fetch(cag_option_context *context)
@@ -443,5 +448,5 @@ int cag_option_get_index(const cag_option_context *context)
 
 const char *cag_option_get_invalid(const cag_option_context *context)
 {
-  return context->argv[context->failed_index-1];
+  return context->argv[context->failed_index - 1];
 }

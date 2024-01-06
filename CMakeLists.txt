@@ -78,6 +78,8 @@ if(ENABLE_TESTS)
   create_test(DEFAULT option alias)
   create_test(DEFAULT option simple_long)
   create_test(DEFAULT option simple)
+  create_test(DEFAULT option boundaries)
+  create_test(DEFAULT option boundaries_mix)
   create_test(DEFAULT option print)
   create_test_list(DEFAULT "${TEST_DIRECTORY}/tests.h")
 
