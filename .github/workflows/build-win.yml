@@ -1,34 +1,18 @@
-name: Build on Linux, FreeBSD, Windows & macOS
-
+name: Build on Windows
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04, windows-2022, macos-12, macos-11]
+        os: [windows-2019, windows-2022]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
-        exclude:
-          - os: windows-2022
-            c_compiler: gcc
-          - os: windows-2022
-            c_compiler: clang
-          - os: ubuntu-22.04
-            c_compiler: cl
-          - os: ubuntu-20.04
-            c_compiler: cl
-          - os: macos-12
-            c_compiler: cl
-          - os: macos-11
-            c_compiler: cl
-
+        c_compiler: [cl]
     steps:
     - uses: actions/checkout@v3
     - name: Set reusable strings
@@ -43,24 +27,10 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DENABLE_TESTS=1
+        -DENABLE_DEMO=1
         -S ${{ github.workspace }}
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest --build-config ${{ matrix.build_type }}
-  build-freebsd:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Test in FreeBSD
-      id: test
-      uses: vmactions/freebsd-vm@v1
-      with:
-        usesh: true
-        prepare: |
-          pkg install -y cmake
-        run: |
-          cmake -B build -S ${{github.workspace}} -DENABLE_TESTS=1
-          cmake --build build
-          ctest --test-dir build

@@ -718,6 +718,7 @@ err_setup:
 int option_boundaries(void)
 {
   int status;
+  int tmpargc;
 
   status = make_args("test -s -a");
   if (status != 0) {
@@ -725,6 +726,7 @@ int option_boundaries(void)
   }
 
   // Remove the "-a".
+  tmpargc = argc;
   argc = 2;
 
   status = option_test_run(argc, argv);
@@ -737,6 +739,7 @@ int option_boundaries(void)
     goto err_wrong;
   }
 
+    argc = tmpargc;
   destroy_args();
 
   return EXIT_SUCCESS;
@@ -750,6 +753,7 @@ err_setup:
 int option_boundaries_mix(void)
 {
   int status;
+  int tmpargc;
 
   status = make_args("test foobar -s -a ");
   if (status != 0) {
@@ -757,6 +761,7 @@ int option_boundaries_mix(void)
   }
 
   // Remove the "-s" and "-a".
+  tmpargc = argc;
   argc = 2;
 
   status = option_test_run(argc, argv);
@@ -769,6 +774,7 @@ int option_boundaries_mix(void)
     goto err_wrong;
   }
 
+  argc = tmpargc;
   destroy_args();
 
   return EXIT_SUCCESS;
