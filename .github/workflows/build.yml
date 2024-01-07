@@ -1,4 +1,4 @@
-name: Build on Linux, FreeBSD, macOS & macOS
+name: Build on Linux, FreeBSD, Windows & macOS
 
 on:
   push:
