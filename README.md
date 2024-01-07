@@ -73,7 +73,7 @@ static struct cag_option options[] = {
 ```
 
 And then just iterate `argv`:
-```
+```c
 int main(int argc, char *argv[])
 {
   char identifier;
