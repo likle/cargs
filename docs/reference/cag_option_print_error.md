@@ -3,7 +3,7 @@ title: cag_option_print_error
 description: Prints the error associated with the invalid option to the specified destination.
 ---
 
-_(since v1.2.0)_  
+_(since v1.1.0)_  
 Prints the error associated with the invalid option to the specified destination.
 
 ## Description
@@ -25,4 +25,4 @@ This function is meant to be called in a fetch loop if a unknown option occurs.
 
 | Version    | Description                                            |
 |------------|--------------------------------------------------------|
-| **v1.2.0** | The function is introduced.                            |
+| **v1.1.0** | The function is introduced.                            |

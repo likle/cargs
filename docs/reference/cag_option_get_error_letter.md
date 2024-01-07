@@ -3,7 +3,7 @@ title: cag_option_get_error_index
 description: Gets the current error index of the context.
 ---
 
-_(since v1.2.0)_  
+_(since v1.1.0)_  
 Retrieves the letter character of the invalid option.
 
 ## Description
@@ -33,4 +33,4 @@ or if the current option is in the long format (e.g. `--long-option`).
 
 | Version    | Description                                            |
 |------------|--------------------------------------------------------|
-| **v1.2.0** | The function is introduced.                            |
+| **v1.1.0** | The function is introduced.                            |

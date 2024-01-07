@@ -3,7 +3,7 @@ title: cag_option_get_error_index
 description: Gets the current error index of the context.
 ---
 
-_(since v1.2.0)_  
+_(since v1.1.0)_  
 Retrieves the index of an invalid option.
 
 ## Description
@@ -37,4 +37,4 @@ Returns the index of the invalid option, or -1 if it is not invalid.
 
 | Version    | Description                     |
 |------------|---------------------------------|
-| **v1.2.0** | The function is introduced.     |
+| **v1.1.0** | The function is introduced.     |

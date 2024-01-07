@@ -16,7 +16,7 @@ This function prepares the context for iteration and initializes the context
 with the supplied options and arguments. After the context has been prepared,
 it can be used to fetch arguments from it.
 
-Before version **v1.2.0** this function was called `cag_option_prepare`.
+Before version **v1.1.0** this function was called `cag_option_prepare`.
  
 ## Parameters
  * **context**: The context which will be initialized.
@@ -29,7 +29,7 @@ Before version **v1.2.0** this function was called `cag_option_prepare`.
 
 | Version    | Description                                 |
 |------------|---------------------------------------------|
-| **v1.2.0** | The function is renamed to cag_option_init. |
+| **v1.1.0** | The function is renamed to cag_option_init. |
 | **v1.0.3** | Added shared library exports.               |
 | **v1.0.1** | Added support for C++ projects.             |
 | **v1.0.0** | The function is introduced.                 |
