@@ -1,6 +1,9 @@
 <img style="width:100%;" src="banner.png">
 
-[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build.yml)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-linux.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-linux.yml)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-freebsd.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-freebsd.yml)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-macOS.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-macOS.yml)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-win.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-win.yml)
 [![codecov](https://img.shields.io/codecov/c/github/likle/cargs/master.svg?label=Coverage)](https://codecov.io/gh/likle/cargs)
 
 # libcargs - command line argument library for C/C++
