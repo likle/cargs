@@ -38,5 +38,6 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest --build-config ${{ matrix.build_type }}
     - name: Coverage
+      if: ${{ matrix.c_compiler == 'gcc' && matrix.sanitizers == 'OFF' }}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: bash <(curl -s https://codecov.io/bash)
