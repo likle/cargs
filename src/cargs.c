@@ -236,22 +236,19 @@ static void cag_option_parse_access_letter(cag_option_context *context,
   // specifically, it will remain '?' within the context.
   letter = n[context->inner_index];
   option = cag_option_find_by_letter(context, letter);
+  v = &n[++context->inner_index];
   if (option == NULL) {
     context->error_index = context->index;
     context->error_letter = letter;
-    ++context->index;
-    context->inner_index = 0;
-    return;
+  } else {
+    // We found an option and now we can specify the identifier within the
+    // context.
+    context->identifier = option->identifier;
+
+    // And now we try to parse the value. This function will also check whether
+    // this option is actually supposed to have a value.
+    cag_option_parse_value(context, option, &v);
   }
-
-  // We found an option and now we can specify the identifier within the
-  // context.
-  context->identifier = option->identifier;
-
-  // And now we try to parse the value. This function will also check whether
-  // this option is actually supposed to have a value.
-  v = &n[++context->inner_index];
-  cag_option_parse_value(context, option, &v);
 
   // Check whether we reached the end of this option argument.
   if (*v == '\0') {
@@ -264,17 +261,23 @@ static void cag_option_shift(cag_option_context *context, int start, int option,
   int end)
 {
   char *tmp;
-  int a_index, shift_index, shift_count, left_index, right_index;
+  int a_index, shift_index, left_shift, right_shift, target_index, source_index;
 
-  shift_count = option - start;
+  // The block between start and option will be shifted to the end, and the order
+  // of everything will be preserved. Left shift is the amount of indexes the block
+  // between option and end will shift towards the start, and right shift is the
+  // amount of indexes the block between start and option will be shifted towards
+  // the end.
+  left_shift = option - start;
+  right_shift = end - option;
 
   // There is no shift is required if the start and the option have the same
   // index.
-  if (shift_count == 0) {
+  if (left_shift == 0) {
     return;
   }
 
-  // Lets loop through the option strings first, which we will move towards the
+  // Let's loop through the option strings first, which we will move towards the
   // beginning.
   for (a_index = option; a_index < end; ++a_index) {
     // First remember the current option value, because we will have to save
@@ -283,19 +286,28 @@ static void cag_option_shift(cag_option_context *context, int start, int option,
 
     // Let's loop over all option values and shift them one towards the end.
     // This will override the option value we just stored temporarily.
-    for (shift_index = 0; shift_index < shift_count; ++shift_index) {
-      left_index = a_index - shift_index;
-      right_index = a_index - shift_index - 1;
-      context->argv[left_index] = context->argv[right_index];
+    for (shift_index = 0; shift_index < left_shift; ++shift_index) {
+      target_index = a_index - shift_index;
+      source_index = a_index - shift_index - 1;
+      context->argv[target_index] = context->argv[source_index];
     }
 
     // Now restore the saved option value at the beginning.
-    context->argv[a_index - shift_count] = tmp;
+    context->argv[a_index - left_shift] = tmp;
   }
 
   // The new index will be before all non-option values, in such a way that they
   // all will be moved again in the next fetch call.
-  context->index = end - shift_count;
+  context->index = end - left_shift;
+
+  // The error index may have changed, we need to fix that as well.
+  if (context->error_index >= start) {
+    if (context->error_index < option) {
+      context->error_index += right_shift;
+    } else if (context->error_index < end) {
+      context->error_index -= left_shift;
+    }
+  }
 }
 
 static bool cag_option_is_argument_string(const char *c)
@@ -438,13 +450,14 @@ CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
   char error_letter;
 
   error_index = cag_option_get_error_index(context);
-  if(error_index < 0) {
+  if (error_index < 0) {
     return;
   }
 
   error_letter = cag_option_get_error_letter(context);
-  if(error_letter) {
-    fprintf(destination, "Unknown option '%c' in '%s'.\n", error_letter, context->argv[error_index]);
+  if (error_letter) {
+    fprintf(destination, "Unknown option '%c' in '%s'.\n", error_letter,
+      context->argv[error_index]);
   } else {
     fprintf(destination, "Unknown option '%s'.\n", context->argv[error_index]);
   }

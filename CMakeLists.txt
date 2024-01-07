@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14.7)
 
 # set project name
 project(cargs
-  VERSION 1.0.3
+  VERSION 1.2.0
   DESCRIPTION "A simple argument parser library"
   LANGUAGES C)
 
@@ -74,7 +74,9 @@ if(ENABLE_TESTS)
   create_test(DEFAULT option short_equal_value)
   create_test(DEFAULT option combined)
   create_test(DEFAULT option unknown_long)
+  create_test(DEFAULT option unknown_long_shift)
   create_test(DEFAULT option unknown_short)
+  create_test(DEFAULT option unknown_short_shift)
   create_test(DEFAULT option alias)
   create_test(DEFAULT option simple_long)
   create_test(DEFAULT option simple)

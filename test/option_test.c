@@ -517,6 +517,41 @@ err_setup:
   return EXIT_FAILURE;
 }
 
+int option_unknown_long_shift(void)
+{
+  int status;
+
+  status = make_args("test foo bar --unknown param");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.multi_access ||
+      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter) {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "--unknown") != 0) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
 int option_unknown_short(void)
 {
   int status;
@@ -535,6 +570,45 @@ int option_unknown_short(void)
       result.long_parameter || result.value_parameter || !result.unknown ||
       result.def || result.value != NULL || result.error_index != 1 ||
       result.error_letter != 'u') {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "-u") != 0) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_unknown_short_shift(void)
+{
+  int status;
+
+  status = make_args("test foo bar -ug params here");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.multi_access ||
+      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter != 'g') {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "-ug") != 0) {
     goto err_wrong;
   }
 
