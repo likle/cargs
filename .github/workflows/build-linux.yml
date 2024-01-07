@@ -1,9 +1,9 @@
 name: Build on Linux
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "**" ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -39,4 +39,4 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
     - name: Coverage
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: bash <(curl -s https://codecov.io/bash) -X gcov
+      run: bash <(curl -s https://codecov.io/bash)
