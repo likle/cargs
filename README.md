@@ -2,7 +2,7 @@
 
 [![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-linux.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-linux.yml)
 [![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-freebsd.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-freebsd.yml)
-[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-macOS.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-macOS.yml)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-macos.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-macos.yml)
 [![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build-win.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build-win.yml)
 [![codecov](https://img.shields.io/codecov/c/github/likle/cargs/master.svg?label=Coverage)](https://codecov.io/gh/likle/cargs)
 
