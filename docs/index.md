@@ -98,13 +98,12 @@ int main(int argc, char *argv[])
     config.simple_flag, config.multiple_flag, config.long_flag,
     config.key ? config.key : "-");
 
-  for (param_index = context.index; param_index < argc; ++param_index) {
+  for (param_index = cag_option_get_index(&context); param_index < argc; ++param_index) {
     printf("additional parameter: %s\n", argv[param_index]);
   }
 
   return EXIT_SUCCESS;
 }
-
 ```
 
 ### Example output
