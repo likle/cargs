@@ -1,7 +1,6 @@
 <img style="width:100%;" src="banner.png">
 
-[![Travis Build](https://img.shields.io/travis/com/likle/cargs/master?label=Linux%2C%20macOS%20%26%20FreeBSD)](https://app.travis-ci.com/github/likle/cargs)
-[![Appveyor Build](https://img.shields.io/appveyor/ci/likle/cargs/master.svg?label=Windows)](https://ci.appveyor.com/project/likle/cargs)
+[![Build Pipeline](https://github.com/likle/cargs/actions/workflows/build.yml/badge.svg)](https://github.com/likle/cargs/actions/workflows/build.yml)
 [![codecov](https://img.shields.io/codecov/c/github/likle/cargs/master.svg?label=Coverage)](https://codecov.io/gh/likle/cargs)
 
 # libcargs - command line argument library for C/C++
