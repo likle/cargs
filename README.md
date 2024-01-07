@@ -100,7 +100,6 @@ int main(int argc, char *argv[])
       printf("Usage: cargsdemo [OPTION]...\n");
       printf("Demonstrates the cargs library.\n\n");
       cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
-      printf("\nNote that all formatting is done by cargs.\n");
       return EXIT_SUCCESS;
     case '?':
       cag_option_print_error(&context, stdout);
@@ -138,18 +137,9 @@ Demonstrates the cargs library.
   --long               Long parameter name
   -k, --key=VALUE      Parameter value
   -h, --help           Shows the command help
+```
 
 Note that all formatting is done by cargs.
-```
-
-```console
-foo@bar:~$ ./cargsdemo also -k=test some -sm additional --long parameters
-simple_flag: 1, multiple_flag: 1, long_flag: 1, key: test
-additional parameter: also
-additional parameter: some
-additional parameter: additional
-additional parameter: parameters
-```
 
 ### Example code
 The complete example can be found in the `./demo/` folder of this repository.
