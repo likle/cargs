@@ -1,4 +1,4 @@
-name: Build cargs
+name: Build on Linux, FreeBSD, macOS & macOS
 
 on:
   push:
@@ -12,17 +12,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019, macos-12, macos-11]
+        os: [ubuntu-22.04, ubuntu-20.04, windows-2022, macos-12, macos-11]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
         exclude:
           - os: windows-2022
             c_compiler: gcc
           - os: windows-2022
-            c_compiler: clang
-          - os: windows-2019
-            c_compiler: gcc
-          - os: windows-2019
             c_compiler: clang
           - os: ubuntu-22.04
             c_compiler: cl
@@ -65,6 +61,6 @@ jobs:
         prepare: |
           pkg install -y cmake
         run: |
-          cmake -B build -S ${{github.workspace}}
+          cmake -B build -S ${{github.workspace}} -DENABLE_TESTS=1
           cmake --build build
           ctest --test-dir build
