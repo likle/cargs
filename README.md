@@ -76,7 +76,6 @@ And then just iterate `argv`:
 ```c
 int main(int argc, char *argv[])
 {
-  char identifier;
   bool simple_flag = false, multiple_flag = false, long_flag = false;
   const char *value = NULL;
   int param_index;
@@ -84,8 +83,7 @@ int main(int argc, char *argv[])
   cag_option_context context;
   cag_option_init(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get_identifier(&context);
-    switch (identifier) {
+    switch (cag_option_get_identifier(&context)) {
     case 's':
       simple_flag = true;
       break;
@@ -112,11 +110,6 @@ int main(int argc, char *argv[])
 
   printf("simple_flag: %i, multiple_flag: %i, long_flag: %i, key: %s\n",
     simple_flag, multiple_flag, long_flag, value ? value : "-");
-
-  for (param_index = cag_option_get_index(&context); param_index < argc;
-       ++param_index) {
-    printf("additional parameter: %s\n", argv[param_index]);
-  }
 
   return EXIT_SUCCESS;
 }

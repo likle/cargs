@@ -34,7 +34,6 @@ static struct cag_option options[] = {
 
 int main(int argc, char *argv[])
 {
-  char identifier;
   bool simple_flag = false, multiple_flag = false, long_flag = false;
   const char *value = NULL;
   int param_index;
@@ -42,8 +41,7 @@ int main(int argc, char *argv[])
   cag_option_context context;
   cag_option_init(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get_identifier(&context);
-    switch (identifier) {
+    switch (cag_option_get_identifier(&context)) {
     case 's':
       simple_flag = true;
       break;
