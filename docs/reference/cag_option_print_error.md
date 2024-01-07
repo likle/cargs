@@ -19,7 +19,7 @@ This function is meant to be called in a fetch loop if a unknown option occurs.
 
 ## Parameters
 * **context**: Pointer to the context from which the option was fetched.
-* **destination**: destination Pointer to the file stream where the error information will be printed.
+* **destination**: Pointer to the file stream where the error information will be printed.
 
 ## Changelog
 

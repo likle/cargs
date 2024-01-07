@@ -8,7 +8,7 @@ Retrieves the index of an invalid option.
 
 ## Description
 ```c
-int cag_option_get_index(const cag_option_context *context);
+int cag_option_get_error_index(const cag_option_context *context);
 ```
 
 This function retrieves the index of an invalid option if the provided option
@@ -23,7 +23,7 @@ The error index represents the index within the argv parameter passed during the
 
 Since users can pass parameters in the short form `-abc`, it won't be entirely clear
 which of the option letter was invalid. Please use 
-[cag_option_get_error_letter({{ site.baseurl }}{% link reference/cag_option_get_error_letter.md %})
+[cag_option_get_error_letter]({{ site.baseurl }}{% link reference/cag_option_get_error_letter.md %})
 for this purpose.
 
  

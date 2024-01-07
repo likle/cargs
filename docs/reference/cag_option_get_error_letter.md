@@ -19,7 +19,7 @@ The result of this function may change after a call to `cag_option_fetch`, and
 essentially represents the error letter of the current iteration.
 
 If long options are used it might be necessary to use 
-[cag_option_get_error_index({{ site.baseurl }}{% link reference/cag_option_get_error_index.md %}) as well,
+[cag_option_get_error_index]({{ site.baseurl }}{% link reference/cag_option_get_error_index.md %}) as well,
 since this function only works with access letters.
 
 ## Parameters

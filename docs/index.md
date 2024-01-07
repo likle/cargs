@@ -9,10 +9,6 @@ description: cargs is a lightweight C/C++ command line argument parser library w
 ## Example
 Here is a simple example of cargs in action.
  ```c
-#include <cargs.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
 /**
  * This is the main configuration of all options available.
  */
@@ -69,9 +65,9 @@ int main(int argc, char *argv[])
   /**
    * Now we just prepare the context and iterate over all options. Simple!
    */
-  cag_option_prepare(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
+  cag_option_init(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get(&context);
+    identifier = cag_option_get_identifier(&context);
     switch (identifier) {
     case 's':
       config.simple_flag = true;
@@ -92,6 +88,9 @@ int main(int argc, char *argv[])
       cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
       printf("\nNote that all formatting is done by cargs.\n");
       return EXIT_SUCCESS;
+    case '?':
+      cag_option_print_error(&context, stdout);
+      break;
     }
   }
 

@@ -6,7 +6,7 @@
 
 # libcargs - command line argument library for C/C++
 
-This is a lighweight C command line argument library which does not require any memory allocation. It is currently
+This is a lighweight C command line argument library which does not require any malloc. It is currently
 compiled and tested under **Windows**, **MacOS** and **Linux**.
 
 ## Features
