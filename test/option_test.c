@@ -787,6 +787,7 @@ err_setup:
 
 int option_print(void)
 {
+#ifndef CAG_NO_FILE
   char buf[255];
   const char *expected;
   FILE *test_file;
@@ -824,6 +825,59 @@ err_seek:
   fclose(test_file);
 err_open:
   return EXIT_FAILURE;
+
+#else // #ifndef CAG_NO_FILE
+  return EXIT_SUCCESS;
+#endif
+}
+
+#ifdef CAG_NO_FILE
+typedef void FILE_CTX;
+#else
+typedef FILE FILE_CTX;
+#endif
+
+int option_printer(void)
+{
+  char buf[255];
+  const char *expected;
+  FILE_CTX *test_file;
+
+  expected = "  -s                   Simple flag\n"
+             "  -a                   Another simple flag\n"
+             "  -m, -M, -o, -O       Multiple access letters\n"
+             "  --long               Long parameter name\n"
+             "  -k, --key=VALUE      Parameter value\n";
+
+  test_file = tmpfile();
+  if (test_file == NULL) {
+    goto err_open;
+  }
+
+  cag_option_printer(options, CAG_ARRAY_SIZE(options), (cag_printer)fprintf,
+    test_file);
+  if (fseek(test_file, 0, SEEK_SET) != 0) {
+    goto err_seek;
+  }
+
+  if (fread(buf, sizeof(buf), 1, test_file) != 1 && feof(test_file) == 0) {
+    goto err_read;
+  }
+
+  if (memcmp(buf, expected, strlen(expected)) != 0) {
+    goto err_test;
+  }
+
+  fclose(test_file);
+  return EXIT_SUCCESS;
+
+err_test:
+err_read:
+err_seek:
+  fclose(test_file);
+err_open:
+  return EXIT_FAILURE;
+
 }
 
 int option_error_print_short(void)
@@ -831,7 +885,7 @@ int option_error_print_short(void)
   int status;
   char buf[255];
   const char *expected;
-  FILE *test_file;
+  FILE_CTX *test_file;
 
   expected = "Unknown option 'u' in '-abu'.\n";
 
@@ -850,7 +904,12 @@ int option_error_print_short(void)
   context.error_index = 1;
   context.error_letter = 'u';
 
+#ifdef CAG_NO_FILE
+  cag_option_printer_error(&context, (cag_printer)fprintf, test_file);
+#else
   cag_option_print_error(&context, test_file);
+#endif
+
   if (fseek(test_file, 0, SEEK_SET) != 0) {
     goto err_seek;
   }
@@ -882,7 +941,7 @@ int option_error_print_long(void)
   int status;
   char buf[255];
   const char *expected;
-  FILE *test_file;
+  FILE_CTX *test_file;
 
   expected = "Unknown option '--unknown'.\n";
 
@@ -901,7 +960,7 @@ int option_error_print_long(void)
   context.error_index = 1;
   context.error_letter = 0;
 
-  cag_option_print_error(&context, test_file);
+  cag_option_printer_error(&context, (cag_printer)fprintf, test_file);
   if (fseek(test_file, 0, SEEK_SET) != 0) {
     goto err_seek;
   }

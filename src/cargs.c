@@ -8,25 +8,25 @@
 #define CAG_OPTION_PRINT_MIN_INDENTION 20
 
 static void cag_option_print_value(const cag_option *option,
-  size_t *accessor_length, FILE *destination)
+  size_t *accessor_length, cag_printer printer, void *printer_ctx)
 {
   if (option->value_name != NULL) {
-    *accessor_length += fprintf(destination, "=%s", option->value_name);
+    *accessor_length += printer(printer_ctx, "=%s", option->value_name);
   }
 }
 
 static void cag_option_print_letters(const cag_option *option, bool *first,
-  size_t *accessor_length, FILE *destination)
+  size_t *accessor_length, cag_printer printer, void *printer_ctx)
 {
   const char *access_letter;
   access_letter = option->access_letters;
   if (access_letter != NULL) {
     while (*access_letter) {
       if (*first) {
-        *accessor_length += fprintf(destination, "-%c", *access_letter);
+        *accessor_length += printer(printer_ctx, "-%c", *access_letter);
         *first = false;
       } else {
-        *accessor_length += fprintf(destination, ", -%c", *access_letter);
+        *accessor_length += printer(printer_ctx, ", -%c", *access_letter);
       }
       ++access_letter;
     }
@@ -34,13 +34,13 @@ static void cag_option_print_letters(const cag_option *option, bool *first,
 }
 
 static void cag_option_print_name(const cag_option *option, bool *first,
-  size_t *accessor_length, FILE *destination)
+  size_t *accessor_length, cag_printer printer, void *printer_ctx)
 {
   if (option->access_name != NULL) {
     if (*first) {
-      *accessor_length += fprintf(destination, "--%s", option->access_name);
+      *accessor_length += printer(printer_ctx, "--%s", option->access_name);
     } else {
-      *accessor_length += fprintf(destination, ", --%s", option->access_name);
+      *accessor_length += printer(printer_ctx, ", --%s", option->access_name);
     }
   }
 }
@@ -443,8 +443,8 @@ CAG_PUBLIC char cag_option_get_error_letter(const cag_option_context *context)
   return context->error_letter;
 }
 
-CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
-  FILE *destination)
+CAG_PUBLIC void cag_option_printer_error(const cag_option_context *context,
+  cag_printer printer, void *printer_ctx)
 {
   int error_index;
   char error_letter;
@@ -456,15 +456,31 @@ CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
 
   error_letter = cag_option_get_error_letter(context);
   if (error_letter) {
-    fprintf(destination, "Unknown option '%c' in '%s'.\n", error_letter,
+    printer(printer_ctx, "Unknown option '%c' in '%s'.\n", error_letter,
       context->argv[error_index]);
   } else {
-    fprintf(destination, "Unknown option '%s'.\n", context->argv[error_index]);
+    printer(printer_ctx, "Unknown option '%s'.\n", context->argv[error_index]);
   }
 }
 
-void cag_option_print(const cag_option *options, size_t option_count,
-  FILE *destination)
+#ifndef CAG_NO_FILE
+CAG_PUBLIC void cag_option_print_error(const cag_option_context* context,
+    FILE* destination)
+{
+  cag_option_printer_error(context, (cag_printer)fprintf, destination);
+}
+#endif
+
+#ifndef CAG_NO_FILE
+void cag_option_print(const cag_option* options, size_t option_count,
+    FILE* destination)
+{
+  cag_option_printer(options, option_count, (cag_printer)fprintf, destination);
+}
+#endif
+
+CAG_PUBLIC void cag_option_printer(const cag_option *options,
+  size_t option_count, cag_printer printer, void *printer_ctx)
 {
   size_t option_index, indention, i, accessor_length;
   const cag_option *option;
@@ -477,20 +493,19 @@ void cag_option_print(const cag_option *options, size_t option_count,
     accessor_length = 0;
     first = true;
 
-    fputs("  ", destination);
+    printer(printer_ctx, "  ");
 
-    cag_option_print_letters(option, &first, &accessor_length, destination);
-    cag_option_print_name(option, &first, &accessor_length, destination);
-    cag_option_print_value(option, &accessor_length, destination);
+    cag_option_print_letters(option, &first, &accessor_length, printer,
+      printer_ctx);
+    cag_option_print_name(option, &first, &accessor_length, printer,
+      printer_ctx);
+    cag_option_print_value(option, &accessor_length, printer, printer_ctx);
 
     for (i = accessor_length; i < indention; ++i) {
-      fputs(" ", destination);
+      printer(printer_ctx, " ");
     }
 
-    fputs(" ", destination);
-    fputs(option->description, destination);
-
-    fprintf(destination, "\n");
+    printer(printer_ctx, " %s\n", option->description);
   }
 }
 

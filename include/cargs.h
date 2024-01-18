@@ -89,6 +89,11 @@ typedef struct cag_option_context
 } cag_option_context;
 
 /**
+ * Prototype for printer used in cag_option_printer. For example fprintf have same prototype
+ */
+typedef int (*cag_printer)(void *ctx, const char *fmt, ...);
+
+/**
  * This is just a small macro which calculates the size of an array.
  */
 #define CAG_ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
@@ -196,8 +201,26 @@ CAG_PUBLIC char cag_option_get_error_letter(const cag_option_context *context);
  * @param context Pointer to the context from which the option was fetched.
  * @param destination Pointer to the file stream where the error information will be printed.
  */
+#ifndef CAG_NO_FILE
 CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
   FILE *destination);
+#endif
+
+/**
+ * @brief Prints the error associated with the invalid option using user
+ * callback.
+ *
+ * This function prints information about the error associated with the invalid
+ * option using user callback. Callback prototype is same with fprintf. It helps
+ * in displaying the error of the current context.
+ *
+ * @param context Pointer to the context from which the option was fetched.
+ * @param printer The printer callback function. For example fprintf.
+ * @param printer_ctx The parameter for printer callback. For example fprintf
+ * could use parameter stderr.
+ */
+CAG_PUBLIC void cag_option_printer_error(const cag_option_context *context,
+  cag_printer printer, void *printer_ctx);
 
 /**
  * @brief Prints all options to the terminal.
@@ -209,8 +232,27 @@ CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
  * @param option_count The option count which will be printed.
  * @param destination The destination where the output will be printed.
  */
+#ifndef CAG_NO_FILE
 CAG_PUBLIC void cag_option_print(const cag_option *options, size_t option_count,
   FILE *destination);
+#endif
+
+ /**
+  * @brief Prints all options using user callback.
+  *
+  * This function prints all options using user callback. This can be used to
+  * generate the output for a "--help" option.
+  * Using user callback is useful in tiny system without FILE support
+  *
+  * @param options The options which will be printed.
+  * @param option_count The option count which will be printed.
+  * @param destination The destination where the output will be printed.
+  * @param printer The printer callback function. For example fprintf.
+  * @param printer_ctx The parameter for printer callback. For example fprintf
+  * could use parameter stderr.
+  */
+CAG_PUBLIC void cag_option_printer(const cag_option *options,
+  size_t option_count, cag_printer printer, void *printer_ctx);
 
 CAG_DEPRECATED(
   "cag_option_prepare has been deprecated. Use cag_option_init instead.")
