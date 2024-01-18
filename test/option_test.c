@@ -831,11 +831,17 @@ err_open:
 #endif
 }
 
+#ifdef CAG_NO_FILE
+typedef void FILE_CTX;
+#else
+typedef FILE FILE_CTX;
+#endif
+
 int option_printer(void)
 {
   char buf[255];
   const char *expected;
-  void *test_file;
+  FILE_CTX *test_file;
 
   expected = "  -s                   Simple flag\n"
              "  -a                   Another simple flag\n"
@@ -879,7 +885,7 @@ int option_error_print_short(void)
   int status;
   char buf[255];
   const char *expected;
-  void *test_file;
+  FILE_CTX *test_file;
 
   expected = "Unknown option 'u' in '-abu'.\n";
 
@@ -935,7 +941,7 @@ int option_error_print_long(void)
   int status;
   char buf[255];
   const char *expected;
-  void *test_file;
+  FILE_CTX *test_file;
 
   expected = "Unknown option '--unknown'.\n";
 
