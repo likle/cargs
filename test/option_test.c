@@ -898,7 +898,11 @@ int option_error_print_short(void)
   context.error_index = 1;
   context.error_letter = 'u';
 
+#ifdef CAG_NO_FILE
   cag_option_printer_error(&context, (cag_printer)fprintf, test_file);
+#else
+  cag_option_print_error(&context, test_file);
+#endif
 
   if (fseek(test_file, 0, SEEK_SET) != 0) {
     goto err_seek;
