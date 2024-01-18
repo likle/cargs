@@ -77,7 +77,6 @@ static size_t cag_option_get_print_indention(const cag_option *options,
   return result;
 }
 
-
 void cag_option_init(cag_option_context *context, const cag_option *options,
   size_t option_count, int argc, char **argv)
 {

@@ -251,8 +251,8 @@ CAG_PUBLIC void cag_option_print(const cag_option *options, size_t option_count,
   * @param printer_ctx The parameter for printer callback. For example fprint
   * could use parameter stderr.
   */
- CAG_PUBLIC void cag_option_printer(const cag_option *options,
-   size_t option_count, cag_printer printer, void *printer_ctx);
+CAG_PUBLIC void cag_option_printer(const cag_option *options,
+  size_t option_count, cag_printer printer, void *printer_ctx);
 
 CAG_DEPRECATED(
   "cag_option_prepare has been deprecated. Use cag_option_init instead.")

@@ -912,12 +912,14 @@ int option_error_print_short(void)
     goto err_test;
   }
 
+  destroy_args();
   fclose(test_file);
   return EXIT_SUCCESS;
 
 err_test:
 err_read:
 err_seek:
+  destroy_args();
 err_setup:
   fclose(test_file);
 err_open:
