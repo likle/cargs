@@ -24,6 +24,8 @@ Returns the current index of the context.
 
 ## Changelog
 
-| Version    | Description                                            |
-|------------|--------------------------------------------------------|
-| **v1.0.0** | The function is introduced.                            |
+| Version    | Description                     |
+|------------|---------------------------------|
+| **v1.0.3** | Added shared library exports.   |
+| **v1.0.1** | Added support for C++ projects. |
+| **v1.0.0** | The function is introduced.     |

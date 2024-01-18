@@ -27,6 +27,8 @@ Returns true if there was another option or false if the end is reached.
 
 ## Changelog
 
-| Version    | Description                                            |
-|------------|--------------------------------------------------------|
-| **v1.0.0** | The function is introduced.                            |
+| Version    | Description                     |
+|------------|---------------------------------|
+| **v1.0.3** | Added shared library exports.   |
+| **v1.0.1** | Added support for C++ projects. |
+| **v1.0.0** | The function is introduced.     |

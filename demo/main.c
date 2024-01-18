@@ -2,15 +2,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-/**
- * This is the main configuration of all options available.
- */
 static struct cag_option options[] = {
-  {.identifier = 's',
-   .access_letters = "s",
-   .access_name = NULL,
-   .value_name = NULL,
-   .description = "Simple flag"},
+{.identifier = 's',
+    .access_letters = "s",
+    .access_name = NULL,
+    .value_name = NULL,
+    .description = "Simple flag"},
 
   {.identifier = 'm',
     .access_letters = "mMoO",
@@ -35,45 +32,27 @@ static struct cag_option options[] = {
     .access_name = "help",
     .description = "Shows the command help"}};
 
-/**
- * This is a custom project configuration structure where you can store the
- * parsed information.
- */
-struct demo_configuration
-{
-  bool simple_flag;
-  bool multiple_flag;
-  bool long_flag;
-  const char *key;
-};
-
 int main(int argc, char *argv[])
 {
-  char identifier;
-  const char *value;
-  cag_option_context context;
-  struct demo_configuration config = {false, false, false, NULL};
+  bool simple_flag = false, multiple_flag = false, long_flag = false;
+  const char *value = NULL;
   int param_index;
 
-  /**
-   * Now we just prepare the context and iterate over all options. Simple!
-   */
-  cag_option_prepare(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
+  cag_option_context context;
+  cag_option_init(&context, options, CAG_ARRAY_SIZE(options), argc, argv);
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get(&context);
-    switch (identifier) {
+    switch (cag_option_get_identifier(&context)) {
     case 's':
-      config.simple_flag = true;
+      simple_flag = true;
       break;
     case 'm':
-      config.multiple_flag = true;
+      multiple_flag = true;
       break;
     case 'l':
-      config.long_flag = true;
+      long_flag = true;
       break;
     case 'k':
       value = cag_option_get_value(&context);
-      config.key = value;
       break;
     case 'h':
       printf("Usage: cargsdemo [OPTION]...\n");
@@ -81,21 +60,19 @@ int main(int argc, char *argv[])
       cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
       printf("\nNote that all formatting is done by cargs.\n");
       return EXIT_SUCCESS;
+    case '?':
+      cag_option_print_error(&context, stdout);
+      break;
     }
   }
 
   printf("simple_flag: %i, multiple_flag: %i, long_flag: %i, key: %s\n",
-    config.simple_flag, config.multiple_flag, config.long_flag,
-    config.key ? config.key : "-");
-  
-  for (param_index = context.index; param_index < argc; ++param_index) {
+    simple_flag, multiple_flag, long_flag, value ? value : "-");
+
+  for (param_index = cag_option_get_index(&context); param_index < argc;
+       ++param_index) {
     printf("additional parameter: %s\n", argv[param_index]);
   }
-
-  int non_option_parameter_count = argc - context.index;
-      const char *first_non_option_parameter = argv[context.index];
-        const char *second_non_option_parameter = argv[context.index + 1];
-        printf("%i %s %s\n", non_option_parameter_count, first_non_option_parameter, second_non_option_parameter);
 
   return EXIT_SUCCESS;
 }

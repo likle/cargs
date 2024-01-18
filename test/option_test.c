@@ -49,8 +49,12 @@ struct cag_result
   bool unknown;
   bool def;
   const char *value;
+
+  int error_index;
+  char error_letter;
 };
 
+cag_option_context context;
 static struct cag_result result;
 static char **argv;
 static int argc;
@@ -96,7 +100,7 @@ static int make_args(const char *str)
   return 0;
 }
 
-static void destroy_args()
+static void destroy_args(void)
 {
   int i;
 
@@ -111,15 +115,17 @@ static int option_test_run(int currentArgc, char *currentArgv[])
 {
   int index;
   char identifier;
-  cag_option_context context;
 
-  cag_option_prepare(&context, options, CAG_ARRAY_SIZE(options), currentArgc,
+  cag_option_init(&context, options, CAG_ARRAY_SIZE(options), currentArgc,
     currentArgv);
 
   memset(&result, 0, sizeof(result));
 
+  result.error_index = cag_option_get_error_index(&context);
+  result.error_letter = cag_option_get_error_letter(&context);
+
   while (cag_option_fetch(&context)) {
-    identifier = cag_option_get(&context);
+    identifier = cag_option_get_identifier(&context);
     switch (identifier) {
     case 's':
       result.simple = true;
@@ -138,6 +144,8 @@ static int option_test_run(int currentArgc, char *currentArgv[])
       result.value = cag_option_get_value(&context);
       break;
     case '?':
+      result.error_index = cag_option_get_error_index(&context);
+      result.error_letter = cag_option_get_error_letter(&context);
       result.unknown = true;
       break;
     default:
@@ -174,7 +182,8 @@ int option_complex(void)
 
   if (!result.simple || result.another || result.multi_access ||
       result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -214,8 +223,8 @@ int option_mixed(void)
 
   if (!result.simple || !result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value == NULL ||
-      strcmp(result.value, "value") != 0) {
+      result.def || result.value == NULL || result.error_index != -1 ||
+      result.error_letter || strcmp(result.value, "value") != 0) {
     goto err_wrong;
   }
 
@@ -245,7 +254,8 @@ int option_ending(void)
 
   if (!result.simple || result.another || result.multi_access ||
       result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -275,7 +285,8 @@ int option_long_missing_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -305,7 +316,8 @@ int option_short_missing_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -335,8 +347,8 @@ int option_long_space_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value == NULL ||
-      strcmp(result.value, "super_value") != 0) {
+      result.def || result.value == NULL || result.error_index != -1 ||
+      result.error_letter || strcmp(result.value, "super_value") != 0) {
     goto err_wrong;
   }
 
@@ -366,8 +378,8 @@ int option_short_space_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value == NULL ||
-      strcmp(result.value, "test_value") != 0) {
+      result.def || result.value == NULL || result.error_index != -1 ||
+      result.error_letter || strcmp(result.value, "test_value") != 0) {
     goto err_wrong;
   }
 
@@ -397,8 +409,8 @@ int option_long_equal_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value == NULL ||
-      strcmp(result.value, "super_value") != 0) {
+      result.def || result.value == NULL || result.error_index != -1 ||
+      result.error_letter || strcmp(result.value, "super_value") != 0) {
     goto err_wrong;
   }
 
@@ -428,8 +440,8 @@ int option_short_equal_value(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || !result.value_parameter || result.unknown ||
-      result.def || result.value == NULL ||
-      strcmp(result.value, "test_value") != 0) {
+      result.def || result.value == NULL || result.error_index != -1 ||
+      result.error_letter || strcmp(result.value, "test_value") != 0) {
     goto err_wrong;
   }
 
@@ -459,7 +471,8 @@ int option_combined(void)
 
   if (!result.simple || !result.another || !result.multi_access ||
       result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -489,7 +502,43 @@ int option_unknown_long(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || result.value_parameter || !result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_unknown_long_shift(void)
+{
+  int status;
+
+  status = make_args("test foo bar --unknown param");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.multi_access ||
+      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter) {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "--unknown") != 0) {
     goto err_wrong;
   }
 
@@ -519,7 +568,47 @@ int option_unknown_short(void)
 
   if (result.simple || result.another || result.multi_access ||
       result.long_parameter || result.value_parameter || !result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter != 'u') {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "-u") != 0) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_unknown_short_shift(void)
+{
+  int status;
+
+  status = make_args("test foo bar -ug params here");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.multi_access ||
+      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.def || result.value != NULL || result.error_index != 1 ||
+      result.error_letter != 'g') {
+    goto err_wrong;
+  }
+
+  if (strcmp(argv[result.error_index], "-ug") != 0) {
     goto err_wrong;
   }
 
@@ -549,7 +638,8 @@ int option_alias(void)
 
   if (result.simple || result.another || !result.multi_access ||
       result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -579,7 +669,8 @@ int option_simple_long(void)
 
   if (result.simple || result.another || result.multi_access ||
       !result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
@@ -609,10 +700,81 @@ int option_simple(void)
 
   if (!result.simple || result.another || result.multi_access ||
       result.long_parameter || result.value_parameter || result.unknown ||
-      result.def || result.value != NULL) {
+      result.def || result.value != NULL || result.error_index != -1 ||
+      result.error_letter) {
     goto err_wrong;
   }
 
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_boundaries(void)
+{
+  int status;
+  int tmpargc;
+
+  status = make_args("test -s -a");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  // Remove the "-a".
+  tmpargc = argc;
+  argc = 2;
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (!result.simple || result.another || result.error_index != -1 ||
+      result.error_letter) {
+    goto err_wrong;
+  }
+
+    argc = tmpargc;
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
+int option_boundaries_mix(void)
+{
+  int status;
+  int tmpargc;
+
+  status = make_args("test foobar -s -a ");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  // Remove the "-s" and "-a".
+  tmpargc = argc;
+  argc = 2;
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.error_index != -1 ||
+      result.error_letter) {
+    goto err_wrong;
+  }
+
+  argc = tmpargc;
   destroy_args();
 
   return EXIT_SUCCESS;
@@ -688,7 +850,6 @@ int option_printer(void)
 
   cag_option_printer(options, CAG_ARRAY_SIZE(options), (cag_printer)fprintf,
     test_file);
-
   if (fseek(test_file, 0, SEEK_SET) != 0) {
     goto err_seek;
   }
@@ -710,5 +871,106 @@ err_seek:
   fclose(test_file);
 err_open:
   return EXIT_FAILURE;
+
 }
 
+int option_error_print_short(void)
+{
+  int status;
+  char buf[255];
+  const char *expected;
+  void *test_file;
+
+  expected = "Unknown option 'u' in '-abu'.\n";
+
+  test_file = tmpfile();
+  if (test_file == NULL) {
+    goto err_open;
+  }
+
+  status = make_args("test -abu");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  context.argv = argv;
+  context.argc = argc;
+  context.error_index = 1;
+  context.error_letter = 'u';
+
+  cag_option_printer_error(&context, (cag_printer)fprintf, test_file);
+
+  if (fseek(test_file, 0, SEEK_SET) != 0) {
+    goto err_seek;
+  }
+
+  if (fread(buf, sizeof(buf), 1, test_file) != 1 && feof(test_file) == 0) {
+    goto err_read;
+  }
+
+  if (memcmp(buf, expected, strlen(expected)) != 0) {
+    goto err_test;
+  }
+
+  fclose(test_file);
+  return EXIT_SUCCESS;
+
+err_test:
+err_read:
+err_seek:
+err_setup:
+  fclose(test_file);
+err_open:
+  return EXIT_FAILURE;
+}
+
+int option_error_print_long(void)
+{
+  int status;
+  char buf[255];
+  const char *expected;
+  void *test_file;
+
+  expected = "Unknown option '--unknown'.\n";
+
+  test_file = tmpfile();
+  if (test_file == NULL) {
+    goto err_open;
+  }
+
+  status = make_args("test --unknown");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  context.argv = argv;
+  context.argc = argc;
+  context.error_index = 1;
+  context.error_letter = 0;
+
+  cag_option_printer_error(&context, (cag_printer)fprintf, test_file);
+  if (fseek(test_file, 0, SEEK_SET) != 0) {
+    goto err_seek;
+  }
+
+  if (fread(buf, sizeof(buf), 1, test_file) != 1 && feof(test_file) == 0) {
+    goto err_read;
+  }
+
+  if (memcmp(buf, expected, strlen(expected)) != 0) {
+    goto err_test;
+  }
+
+  destroy_args();
+  fclose(test_file);
+  return EXIT_SUCCESS;
+
+err_test:
+err_read:
+err_seek:
+  destroy_args();
+err_setup:
+  fclose(test_file);
+err_open:
+  return EXIT_FAILURE;
+}
