@@ -89,7 +89,7 @@ typedef struct cag_option_context
 } cag_option_context;
 
 /**
- * Prototype for printer used in cag_option_printer. For example fprint have same prototype
+ * Prototype for printer used in cag_option_printer. For example fprintf have same prototype
  */
 typedef int (*cag_printer)(void *ctx, const char *fmt, ...);
 
@@ -211,12 +211,12 @@ CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
  * callback.
  *
  * This function prints information about the error associated with the invalid
- * option to the specified destination (such as a file stream). It helps in
- * displaying the error of the current context.
+ * option using user callback. Callback prototype is same with fprintf. It helps
+ * in displaying the error of the current context.
  *
  * @param context Pointer to the context from which the option was fetched.
- * @param printer The printer callback function. For example fprint.
- * @param printer_ctx The parameter for printer callback. For example fprint
+ * @param printer The printer callback function. For example fprintf.
+ * @param printer_ctx The parameter for printer callback. For example fprintf
  * could use parameter stderr.
  */
 CAG_PUBLIC void cag_option_printer_error(const cag_option_context *context,
@@ -247,8 +247,8 @@ CAG_PUBLIC void cag_option_print(const cag_option *options, size_t option_count,
   * @param options The options which will be printed.
   * @param option_count The option count which will be printed.
   * @param destination The destination where the output will be printed.
-  * @param printer The printer callback function. For example fprint.
-  * @param printer_ctx The parameter for printer callback. For example fprint
+  * @param printer The printer callback function. For example fprintf.
+  * @param printer_ctx The parameter for printer callback. For example fprintf
   * could use parameter stderr.
   */
 CAG_PUBLIC void cag_option_printer(const cag_option *options,
