@@ -1,0 +1,34 @@
+CompileFlags:
+    Add: 
+     - "-I../include"
+     - "-xc"
+     - "-std=c11"
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - cert-*
+      - clang-*
+      - concurrency-*
+      - google-*
+      - misc-*
+      - modernize-*
+      - performance-*
+      - portability-*
+      - readability-*
+    Remove:
+      - misc-no-recursion
+      - readability-isolate-declaration
+      - readability-identifier-length
+      - readability-else-after-return
+      - readability-magic-numbers
+      - readability-uppercase-literal-suffix
+      - readability-function-cognitive-complexity
+      - google-readability-todo
+      - bugprone-sizeof-expression
+      - bugprone-easily-swappable-parameters
+      - bugprone-switch-missing-default-case
+      - modernize-macro-to-enum

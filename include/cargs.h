@@ -89,7 +89,8 @@ typedef struct cag_option_context
 } cag_option_context;
 
 /**
- * Prototype for printer used in cag_option_printer. For example fprintf have same prototype
+ * Prototype for printer used in cag_option_printer. For example fprintf have
+ * same prototype
  */
 typedef int (*cag_printer)(void *ctx, const char *fmt, ...);
 
@@ -172,7 +173,8 @@ CAG_PUBLIC int cag_option_get_index(const cag_option_context *context);
  *
  * This function retrieves the index of an invalid option if the provided option
  * does not match any of the options specified in the `cag_option` list. This is
- * particularly useful when detailed information about an invalid option is required.
+ * particularly useful when detailed information about an invalid option is
+ * required.
  *
  * @param context Pointer to the context from which the option was fetched.
  * @return Returns the index of the invalid option, or -1 if it is not invalid.
@@ -192,14 +194,16 @@ CAG_PUBLIC int cag_option_get_error_index(const cag_option_context *context);
 CAG_PUBLIC char cag_option_get_error_letter(const cag_option_context *context);
 
 /**
- * @brief Prints the error associated with the invalid option to the specified destination.
+ * @brief Prints the error associated with the invalid option to the specified
+ * destination.
  *
- * This function prints information about the error associated with the invalid option
- * to the specified destination (such as a file stream). It helps in displaying the error
- * of the current context.
+ * This function prints information about the error associated with the invalid
+ * option to the specified destination (such as a file stream). It helps in
+ * displaying the error of the current context.
  *
  * @param context Pointer to the context from which the option was fetched.
- * @param destination Pointer to the file stream where the error information will be printed.
+ * @param destination Pointer to the file stream where the error information
+ * will be printed.
  */
 #ifndef CAG_NO_FILE
 CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
@@ -237,20 +241,20 @@ CAG_PUBLIC void cag_option_print(const cag_option *options, size_t option_count,
   FILE *destination);
 #endif
 
- /**
-  * @brief Prints all options using user callback.
-  *
-  * This function prints all options using user callback. This can be used to
-  * generate the output for a "--help" option.
-  * Using user callback is useful in tiny system without FILE support
-  *
-  * @param options The options which will be printed.
-  * @param option_count The option count which will be printed.
-  * @param destination The destination where the output will be printed.
-  * @param printer The printer callback function. For example fprintf.
-  * @param printer_ctx The parameter for printer callback. For example fprintf
-  * could use parameter stderr.
-  */
+/**
+ * @brief Prints all options using user callback.
+ *
+ * This function prints all options using user callback. This can be used to
+ * generate the output for a "--help" option.
+ * Using user callback is useful in tiny system without FILE support
+ *
+ * @param options The options which will be printed.
+ * @param option_count The option count which will be printed.
+ * @param destination The destination where the output will be printed.
+ * @param printer The printer callback function. For example fprintf.
+ * @param printer_ctx The parameter for printer callback. For example fprintf
+ * could use parameter stderr.
+ */
 CAG_PUBLIC void cag_option_printer(const cag_option *options,
   size_t option_count, cag_printer printer, void *printer_ctx);
 

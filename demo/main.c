@@ -1,9 +1,10 @@
 #include <cargs.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 static struct cag_option options[] = {
-{.identifier = 's',
+  {.identifier = 's',
     .access_letters = "s",
     .access_name = NULL,
     .value_name = NULL,
@@ -30,7 +31,8 @@ static struct cag_option options[] = {
   {.identifier = 'h',
     .access_letters = "h",
     .access_name = "help",
-    .description = "Shows the command help"}};
+    .description = "Shows the command help"},
+};
 
 int main(int argc, char *argv[])
 {

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <cargs.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -38,6 +39,7 @@ static void cag_option_print_name(const cag_option *option, bool *first,
   if (option->access_name != NULL) {
     if (*first) {
       *accessor_length += printer(printer_ctx, "--%s", option->access_name);
+      *first = false;
     } else {
       *accessor_length += printer(printer_ctx, ", --%s", option->access_name);
     }
@@ -262,11 +264,11 @@ static void cag_option_shift(cag_option_context *context, int start, int option,
   char *tmp;
   int a_index, shift_index, left_shift, right_shift, target_index, source_index;
 
-  // The block between start and option will be shifted to the end, and the order
-  // of everything will be preserved. Left shift is the amount of indexes the block
-  // between option and end will shift towards the start, and right shift is the
-  // amount of indexes the block between start and option will be shifted towards
-  // the end.
+  // The block between start and option will be shifted to the end, and the
+  // order of everything will be preserved. Left shift is the amount of indexes
+  // the block between option and end will shift towards the start, and right
+  // shift is the amount of indexes the block between start and option will be
+  // shifted towards the end.
   left_shift = option - start;
   right_shift = end - option;
 
@@ -462,22 +464,6 @@ CAG_PUBLIC void cag_option_printer_error(const cag_option_context *context,
   }
 }
 
-#ifndef CAG_NO_FILE
-CAG_PUBLIC void cag_option_print_error(const cag_option_context* context,
-    FILE* destination)
-{
-  cag_option_printer_error(context, (cag_printer)fprintf, destination);
-}
-#endif
-
-#ifndef CAG_NO_FILE
-void cag_option_print(const cag_option* options, size_t option_count,
-    FILE* destination)
-{
-  cag_option_printer(options, option_count, (cag_printer)fprintf, destination);
-}
-#endif
-
 CAG_PUBLIC void cag_option_printer(const cag_option *options,
   size_t option_count, cag_printer printer, void *printer_ctx)
 {
@@ -507,6 +493,22 @@ CAG_PUBLIC void cag_option_printer(const cag_option *options,
     printer(printer_ctx, " %s\n", option->description);
   }
 }
+
+#ifndef CAG_NO_FILE
+CAG_PUBLIC void cag_option_print_error(const cag_option_context *context,
+  FILE *destination)
+{
+  cag_option_printer_error(context, (cag_printer)fprintf, destination);
+}
+#endif
+
+#ifndef CAG_NO_FILE
+void cag_option_print(const cag_option *options, size_t option_count,
+  FILE *destination)
+{
+  cag_option_printer(options, option_count, (cag_printer)fprintf, destination);
+}
+#endif
 
 void cag_option_prepare(cag_option_context *context, const cag_option *options,
   size_t option_count, int argc, char **argv)
