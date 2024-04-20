@@ -32,3 +32,14 @@ Diagnostics:
       - bugprone-easily-swappable-parameters
       - bugprone-switch-missing-default-case
       - modernize-macro-to-enum
+    
+    CheckOptions:
+      readability-identifier-naming.StructCase: lower_case
+      readability-identifier-naming.StructPrefix: cag_
+      readability-identifier-naming.FunctionCase: lower_case
+      readability-identifier-naming.FunctionPrefix: cag_
+      readability-identifier-naming.VariableCase: lower_case
+      readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+      readability-identifier-naming.MacroDefinitionPrefix: CAG_
+      readability-identifier-naming.EnumConstantCase: UPPER_CASE
+      readability-identifier-naming.EnumConstantPrefix: CAG_
