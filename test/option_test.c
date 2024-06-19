@@ -26,6 +26,14 @@ static struct cag_option options[] = {
     .access_name = NULL,
     .value_name = NULL,
     .description = "Multiple access letters"},
+  
+  // It is important that 'long-long' comes before 'long':
+  // this way we can test that '--long' will not be matched to it.
+  {.identifier = 'L',
+    .access_letters = NULL,
+    .access_name = "long-long",
+    .value_name = NULL,
+    .description = "Very long parameter name"},
 
   {.identifier = 'l',
     .access_letters = NULL,
@@ -44,6 +52,7 @@ struct cag_result
   bool simple;
   bool another;
   bool multi_access;
+  bool very_long_parameter;
   bool long_parameter;
   bool value_parameter;
   bool unknown;
@@ -136,6 +145,9 @@ static int option_test_run(int currentArgc, char *currentArgv[])
     case 'm':
       result.multi_access = true;
       break;
+    case 'L':
+      result.very_long_parameter = true;
+      break;
     case 'l':
       result.long_parameter = true;
       break;
@@ -181,7 +193,8 @@ int option_complex(void)
   }
 
   if (!result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -222,7 +235,8 @@ int option_mixed(void)
   }
 
   if (!result.simple || !result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value == NULL || result.error_index != -1 ||
       result.error_letter || strcmp(result.value, "value") != 0) {
     goto err_wrong;
@@ -253,7 +267,8 @@ int option_ending(void)
   }
 
   if (!result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -284,7 +299,8 @@ int option_long_missing_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -315,7 +331,8 @@ int option_short_missing_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -346,7 +363,8 @@ int option_long_space_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value == NULL || result.error_index != -1 ||
       result.error_letter || strcmp(result.value, "super_value") != 0) {
     goto err_wrong;
@@ -377,7 +395,8 @@ int option_short_space_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value == NULL || result.error_index != -1 ||
       result.error_letter || strcmp(result.value, "test_value") != 0) {
     goto err_wrong;
@@ -408,7 +427,8 @@ int option_long_equal_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value == NULL || result.error_index != -1 ||
       result.error_letter || strcmp(result.value, "super_value") != 0) {
     goto err_wrong;
@@ -439,7 +459,8 @@ int option_short_equal_value(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || !result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      !result.value_parameter || result.unknown ||
       result.def || result.value == NULL || result.error_index != -1 ||
       result.error_letter || strcmp(result.value, "test_value") != 0) {
     goto err_wrong;
@@ -470,7 +491,8 @@ int option_combined(void)
   }
 
   if (!result.simple || !result.another || !result.multi_access ||
-      result.long_parameter || result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -501,7 +523,8 @@ int option_unknown_long(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || !result.unknown ||
       result.def || result.value != NULL || result.error_index != 1 ||
       result.error_letter) {
     goto err_wrong;
@@ -532,7 +555,8 @@ int option_unknown_long_shift(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || !result.unknown ||
       result.def || result.value != NULL || result.error_index != 1 ||
       result.error_letter) {
     goto err_wrong;
@@ -567,7 +591,8 @@ int option_unknown_short(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || !result.unknown ||
       result.def || result.value != NULL || result.error_index != 1 ||
       result.error_letter != 'u') {
     goto err_wrong;
@@ -602,7 +627,8 @@ int option_unknown_short_shift(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || !result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || !result.unknown ||
       result.def || result.value != NULL || result.error_index != 1 ||
       result.error_letter != 'g') {
     goto err_wrong;
@@ -637,7 +663,8 @@ int option_alias(void)
   }
 
   if (result.simple || result.another || !result.multi_access ||
-      result.long_parameter || result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -668,7 +695,8 @@ int option_simple_long(void)
   }
 
   if (result.simple || result.another || result.multi_access ||
-      !result.long_parameter || result.value_parameter || result.unknown ||
+      !result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -699,7 +727,8 @@ int option_simple(void)
   }
 
   if (!result.simple || result.another || result.multi_access ||
-      result.long_parameter || result.value_parameter || result.unknown ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || result.unknown ||
       result.def || result.value != NULL || result.error_index != -1 ||
       result.error_letter) {
     goto err_wrong;
@@ -785,6 +814,37 @@ err_setup:
   return EXIT_FAILURE;
 }
 
+int option_long_prefix(void)
+{
+  int status;
+
+  status = make_args("test --lo");
+  if (status != 0) {
+    goto err_setup;
+  }
+
+  status = option_test_run(argc, argv);
+  if (status < 0) {
+    goto err_wrong;
+  }
+
+  if (result.simple || result.another || result.multi_access ||
+      result.long_parameter || result.very_long_parameter ||
+      result.value_parameter || !result.unknown || result.def ||
+      result.value != NULL || result.error_index != 1 || result.error_letter) {
+    goto err_wrong;
+  }
+
+  destroy_args();
+
+  return EXIT_SUCCESS;
+
+err_wrong:
+  destroy_args();
+err_setup:
+  return EXIT_FAILURE;
+}
+
 int option_print(void)
 {
 #ifndef CAG_NO_FILE
@@ -795,6 +855,7 @@ int option_print(void)
   expected = "  -s                   Simple flag\n"
              "  -a                   Another simple flag\n"
              "  -m, -M, -o, -O       Multiple access letters\n"
+             "  --long-long          Very long parameter name\n"
              "  --long               Long parameter name\n"
              "  -k, --key=VALUE      Parameter value\n";
 
@@ -846,6 +907,7 @@ int option_printer(void)
   expected = "  -s                   Simple flag\n"
              "  -a                   Another simple flag\n"
              "  -m, -M, -o, -O       Multiple access letters\n"
+             "  --long-long          Very long parameter name\n"
              "  --long               Long parameter name\n"
              "  -k, --key=VALUE      Parameter value\n";
 
