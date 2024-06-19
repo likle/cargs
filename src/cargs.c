@@ -113,7 +113,8 @@ static const cag_option *cag_option_find_by_name(cag_option_context *context,
     // Try to compare the name of the access name. We can use the name_size or
     // this comparison, since we are guaranteed to have null-terminated access
     // names.
-    if (strncmp(option->access_name, name, name_size) == 0) {
+    if (strncmp(option->access_name, name, name_size) == 0
+          && option->access_name[name_size] == '\0') {
       return option;
     }
   }
